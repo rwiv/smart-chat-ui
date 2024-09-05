@@ -1,0 +1,8 @@
+type ChatMessage {
+    id: Long!
+    chatRoom: ChatRoom!
+    createdBy: Account!
+    content: String!
+    createdAt: DateTime!
+    num: Int!
+}
