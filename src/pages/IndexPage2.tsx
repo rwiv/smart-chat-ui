@@ -74,8 +74,9 @@ export function IndexPage2() {
         <div key={chatRoom.id}>{chatRoom.title}</div>
       ))}
       <a ref={anchorRef} style={{display: 'none'}}></a>
-      <button onClick={onDlClick}>download</button>
-      <video ref={videoRef} autoPlay/>
+      {/*<button onClick={onDlClick}>download</button>*/}
+      <h2>test MediaStream</h2>
+      <video ref={videoRef} autoPlay width={1280} height={720}/>
     </div>
   )
 }
