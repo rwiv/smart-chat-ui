@@ -5,7 +5,7 @@ interface ChatRoom {
   title: string;
 }
 
-export function IndexPage2() {
+export function VideoTestPage() {
   const [data, setData] = useState<ChatRoom[]>([]);
   const recordedChunks = useRef<Blob[]>([]);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -52,21 +52,21 @@ export function IndexPage2() {
     console.log(stream);
   }
 
-  const onDlClick = () => {
-    mediaRecorder.current?.stop();
-    const blob = new Blob(recordedChunks.current, {
-      type: 'video/webm'
-    });
-    const url = URL.createObjectURL(blob);
-    const anchor = anchorRef.current;
-    if (anchor) {
-      anchor.href = url;
-      anchor.download = 'test.webm';
-      anchor.click();
-      URL.revokeObjectURL(url);
-    }
-    recordedChunks.current = [];
-  }
+  // const onDlClick = () => {
+  //   mediaRecorder.current?.stop();
+  //   const blob = new Blob(recordedChunks.current, {
+  //     type: 'video/webm'
+  //   });
+  //   const url = URL.createObjectURL(blob);
+  //   const anchor = anchorRef.current;
+  //   if (anchor) {
+  //     anchor.href = url;
+  //     anchor.download = 'test.webm';
+  //     anchor.click();
+  //     URL.revokeObjectURL(url);
+  //   }
+  //   recordedChunks.current = [];
+  // }
 
   return (
     <div>
