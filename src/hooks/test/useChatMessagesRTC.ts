@@ -1,14 +1,15 @@
 import {IMessage} from "@stomp/stompjs";
 import {CandidateMessage, DescriptionMessage, requestAnswer, requestCandidate, requestOffer} from "@/client/signaling.ts";
 import {createStompClient} from "@/lib/web/stomp.ts";
-import {RtcConnection, useDccMapStore} from "@/hooks/test/useConnectionStore.ts";
+import {RtcConnection, useConnMapStore} from "@/hooks/test/useConnectionStore.ts";
 import {useStreamStompStore} from "@/hooks/test/StreamStompStore.ts";
+import React from "react";
 
-interface Account {
+export interface Account {
   id: number;
 }
 
-interface ChatUser {
+export interface ChatUser {
   account: Account;
 }
 
@@ -16,9 +17,11 @@ export function useChatMessagesRTC(
   chatRoomId: number,
   myInfo: Account,
   chatUsers: ChatUser[],
+  myStream: MediaStream,
+  yourVideoRef: React.MutableRefObject<HTMLVideoElement | null>,
 ) {
 
-  const {connMap, addConn, restore, prevCandidateMap, addPrevCandidate} = useDccMapStore();
+  const {connMap, addConn, restore, prevCandidateMap, addPrevCandidate} = useConnMapStore();
   const {setNewStompClient} = useStreamStompStore();
 
   const createConn = (targetId: number) => {
@@ -26,6 +29,7 @@ export function useChatMessagesRTC(
       iceServers: [ { urls: "stun:stun.l.google.com:19302" } ],
     });
     pc.onicecandidate = async ev => {
+      console.log("onicecandidate");
       if (ev.candidate === undefined || ev.candidate === null) return;
 
       console.log(`send candidate: ${ev.candidate.candidate}`);
@@ -38,15 +42,19 @@ export function useChatMessagesRTC(
 
     pc.ontrack = async ev => {
       console.log("ontrack")
-      const stream = ev.streams[0];
-      const video = document.createElement("video");
-      video.srcObject = stream;
-      video.autoplay = true;
-      document.body.appendChild(video);
+      console.log(ev);
+      if (yourVideoRef.current) {
+        yourVideoRef.current.srcObject = ev.streams[0];
+      }
     }
-    const dcc = new RtcConnection(pc, targetId);
-    addConn(dcc);
-    return dcc;
+
+    myStream.getTracks().forEach(track => {
+      pc.addTrack(track, myStream);
+    });
+
+    const conn = new RtcConnection(pc, targetId);
+    addConn(conn);
+    return conn;
   }
 
   const reqOffer = async (pc: RTCPeerConnection, target: Account) => {
@@ -66,16 +74,16 @@ export function useChatMessagesRTC(
       return;
     }
 
-    let dcc = connMap.get(senderId);
-    if (dcc === undefined) {
-      dcc = createConn(senderId);
+    let conn = connMap.get(senderId);
+    if (conn === undefined) {
+      conn = createConn(senderId);
     }
-    const con = dcc!.connection;
+    const pc = conn!.pc;
 
-    await con.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await con.createAnswer();
-    await con.setLocalDescription(new RTCSessionDescription(answer));
-    await dcc.emitRemoteDesc(prevCandidateMap);
+    await pc.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(new RTCSessionDescription(answer));
+    await conn.emitRemoteDesc(prevCandidateMap);
 
     await requestAnswer(chatRoomId, {
       description: answer,
@@ -92,40 +100,45 @@ export function useChatMessagesRTC(
       return;
     }
 
-    const dcc = connMap.get(senderId);
-    const con = dcc?.connection;
-    if (con === undefined) {
+    const conn = connMap.get(senderId);
+    const pc = conn?.pc;
+    if (pc === undefined) {
       console.log("not found dcc in answer");
       return;
     }
-    await con.setRemoteDescription(new RTCSessionDescription(answer));
-    await dcc?.emitRemoteDesc(prevCandidateMap);
+    await pc.setRemoteDescription(new RTCSessionDescription(answer));
+    await conn?.emitRemoteDesc(prevCandidateMap);
     console.log(`answer: ${msg.body}`);
   }
 
   const subCandidate = async (msg: IMessage) => {
+    console.log("subCandidate");
     const {candidate, senderId, receiverId} = JSON.parse(msg.body) as CandidateMessage;
     if (myInfo.id !== receiverId) {
       return;
     }
 
-    const dcc = connMap.get(senderId);
-    const con = dcc?.connection;
-    if (con === undefined) {
-      console.log("not found dcc in candidate");
+    const conn = connMap.get(senderId);
+    if (conn === undefined) {
+      console.log("not found conn");
       return;
     }
+    const pc = conn.pc;
+    if (pc === undefined) {
+      throw Error("pc is undefined");
+    }
 
-    if (con.remoteDescription === null) {
+    if (pc.remoteDescription === null) {
       addPrevCandidate(senderId, new RTCIceCandidate(candidate));
     } else {
-      await con.addIceCandidate(new RTCIceCandidate(candidate));
+      await pc.addIceCandidate(new RTCIceCandidate(candidate));
     }
+    // TODO
+    // await pc.addIceCandidate(new RTCIceCandidate(candidate));
     console.log(`received candidate: ${candidate.candidate}`);
   }
 
   const connect = () => {
-    console.log("start connect")
     const stomp = createStompClient();
     stomp.onConnect  = async () => {
       const offerSub = stomp.subscribe(`/sub/signal/offer/${chatRoomId}`, subOffer);
@@ -136,8 +149,8 @@ export function useChatMessagesRTC(
       // set rtc connections
       const targets = chatUsers.map(it => it.account).filter(it => it.id !== myInfo.id)
       for (const target of targets) {
-        const dcc = createConn(target.id);
-        await reqOffer(dcc.connection, target);
+        const conn = createConn(target.id);
+        await reqOffer(conn.pc, target);
       }
     }
     stomp.activate();

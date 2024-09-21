@@ -46,7 +46,7 @@ export class ConnMap {
 
 export class RtcConnection {
   constructor(
-    public readonly connection: RTCPeerConnection,
+    public readonly pc: RTCPeerConnection,
     public readonly targetId: number,
   ) {
   }
@@ -54,17 +54,17 @@ export class RtcConnection {
   async emitRemoteDesc(prevCandidateMap: Map<number, RTCIceCandidate[]>) {
     const prevCandidates = prevCandidateMap.get(this.targetId) ?? [];
     for (const candidate of prevCandidates) {
-      await this.connection.addIceCandidate(new RTCIceCandidate(candidate));
+      await this.pc.addIceCandidate(new RTCIceCandidate(candidate));
     }
     prevCandidateMap.delete(this.targetId);
   }
 
   close() {
-    this.connection.close();
+    this.pc.close();
   }
 }
 
-interface GlobalState {
+export interface ConnMapGlobalState {
   connMap: ConnMap;
   addConn: (dcc: RtcConnection) => void;
   restore: () => void;
@@ -73,7 +73,7 @@ interface GlobalState {
   addPrevCandidate: (targetId: number, candidate: RTCIceCandidate) => void;
 }
 
-export const useDccMapStore = create<GlobalState>((set) => ({
+export const useConnMapStore = create<ConnMapGlobalState>((set) => ({
   connMap: new ConnMap(),
   prevCandidateMap: new Map(),
   addPrevCandidate: (targetId, candidate) => set(prev => {

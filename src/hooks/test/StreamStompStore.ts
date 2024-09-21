@@ -21,12 +21,12 @@ export class StompClient {
   }
 }
 
-interface GlobalState {
+export interface StreamStompGlobalState {
   stompClient: StompClient;
   setNewStompClient: (client: Client | undefined, subs: StompSubscription[]) => void;
 }
 
-export const useStreamStompStore = create<GlobalState>((set) => ({
+export const useStreamStompStore = create<StreamStompGlobalState>((set) => ({
   stompClient: new StompClient(undefined, []),
   setNewStompClient: (client, subs) => set(prev => {
     const stompClient = prev.stompClient;
