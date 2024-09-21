@@ -1,9 +1,9 @@
+import React from "react";
 import {IMessage} from "@stomp/stompjs";
 import {CandidateMessage, DescriptionMessage, requestAnswer, requestCandidate, requestOffer} from "@/client/signaling.ts";
 import {createStompClient} from "@/lib/web/stomp.ts";
 import {RtcConnection, useConnMapStore} from "@/hooks/test/useConnectionStore.ts";
 import {useStreamStompStore} from "@/hooks/test/StreamStompStore.ts";
-import React from "react";
 
 export interface Account {
   id: number;
@@ -21,7 +21,7 @@ export function useChatMessagesRTC(
   yourVideoRef: React.MutableRefObject<HTMLVideoElement | null>,
 ) {
 
-  const {connMap, addConn, restore, prevCandidateMap, addPrevCandidate} = useConnMapStore();
+  const {connMap, addConn, restore} = useConnMapStore();
   const {setNewStompClient} = useStreamStompStore();
 
   const createConn = (targetId: number) => {
@@ -83,7 +83,6 @@ export function useChatMessagesRTC(
     await pc.setRemoteDescription(new RTCSessionDescription(offer));
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(new RTCSessionDescription(answer));
-    await conn.emitRemoteDesc(prevCandidateMap);
 
     await requestAnswer(chatRoomId, {
       description: answer,
@@ -107,7 +106,6 @@ export function useChatMessagesRTC(
       return;
     }
     await pc.setRemoteDescription(new RTCSessionDescription(answer));
-    await conn?.emitRemoteDesc(prevCandidateMap);
     console.log(`answer: ${msg.body}`);
   }
 
@@ -128,13 +126,7 @@ export function useChatMessagesRTC(
       throw Error("pc is undefined");
     }
 
-    if (pc.remoteDescription === null) {
-      addPrevCandidate(senderId, new RTCIceCandidate(candidate));
-    } else {
-      await pc.addIceCandidate(new RTCIceCandidate(candidate));
-    }
-    // TODO
-    // await pc.addIceCandidate(new RTCIceCandidate(candidate));
+    await pc.addIceCandidate(new RTCIceCandidate(candidate));
     console.log(`received candidate: ${candidate.candidate}`);
   }
 

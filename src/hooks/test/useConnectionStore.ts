@@ -51,14 +51,6 @@ export class RtcConnection {
   ) {
   }
 
-  async emitRemoteDesc(prevCandidateMap: Map<number, RTCIceCandidate[]>) {
-    const prevCandidates = prevCandidateMap.get(this.targetId) ?? [];
-    for (const candidate of prevCandidates) {
-      await this.pc.addIceCandidate(new RTCIceCandidate(candidate));
-    }
-    prevCandidateMap.delete(this.targetId);
-  }
-
   close() {
     this.pc.close();
   }
@@ -69,23 +61,10 @@ export interface ConnMapGlobalState {
   addConn: (dcc: RtcConnection) => void;
   restore: () => void;
   refresh: () => void;
-  prevCandidateMap: Map<number, RTCIceCandidate[]>,
-  addPrevCandidate: (targetId: number, candidate: RTCIceCandidate) => void;
 }
 
 export const useConnMapStore = create<ConnMapGlobalState>((set) => ({
   connMap: new ConnMap(),
-  prevCandidateMap: new Map(),
-  addPrevCandidate: (targetId, candidate) => set(prev => {
-    const preCandidates = prev.prevCandidateMap.get(targetId);
-    if (preCandidates === undefined) {
-      const candidates = [candidate];
-      prev.prevCandidateMap.set(targetId, candidates);
-    } else {
-      preCandidates.push(candidate);
-    }
-    return { ...prev };
-  }),
   addConn: dcc => set(prev => {
     const connMap = prev.connMap;
     connMap.add(dcc);
