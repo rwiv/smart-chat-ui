@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from "react";
 import {Button} from "@/components/ui/button.tsx";
 import {RTCConnectTest} from "@/components/test/RTCConnectTest.tsx";
+import {login, LoginRequest} from "@/client/account.ts";
 
 function getChatUsers(myId: number) {
   if (myId === 2) {
@@ -19,8 +20,18 @@ export function RTCTestPage() {
 
   useEffect(() => {
     console.log("hello");
+    onLoginUser1();
     createMediaStream();
   }, []);
+
+  const onLoginUser1 = async () => {
+    const req: LoginRequest = {
+      username: "user1@gmail.com",
+      password: "1234",
+    };
+    const res = await login(req, false);
+    console.log(await res.text());
+  }
 
   const onClick = (id: number) => {
     setUserId(id);
