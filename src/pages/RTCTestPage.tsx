@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import {Button} from "@/components/ui/button.tsx";
 import {RTCConnectTest} from "@/components/test/RTCConnectTest.tsx";
 import {login, LoginRequest} from "@/client/account.ts";
+import { HStack } from "@/lib/style/layouts";
 
 function getChatUsers(myId: number) {
   if (myId === 2) {
@@ -21,7 +22,6 @@ export function RTCTestPage() {
   useEffect(() => {
     console.log("hello");
     onLoginUser1();
-    createMediaStream();
   }, []);
 
   const onLoginUser1 = async () => {
@@ -37,7 +37,7 @@ export function RTCTestPage() {
     setUserId(id);
   }
 
-  const createMediaStream = async () => {
+  const onSelectMediaStream = async () => {
     const stream = await navigator.mediaDevices.getDisplayMedia({
       video: true,
       audio: true,
@@ -54,26 +54,28 @@ export function RTCTestPage() {
     <div>
       <div>
         <h1>connection</h1>
-        <div>{userId}</div>
+        {/*<div>{userId}</div>*/}
         <div>
           <Button onClick={() => onClick(1)}>1</Button>
           <Button onClick={() => onClick(2)}>2</Button>
+          <Button onClick={onSelectMediaStream}>Connect</Button>
         </div>
       </div>
       <div>
         <h1>videos</h1>
-        <div>
-          <div>my video</div>
-          <video ref={myVideoRef} autoPlay width={640} height={360}/>
-        </div>
-        {userId && myStream && (
-          <RTCConnectTest
-            chatRoomId={chatRoomId}
-            myInfo={{ id: userId }}
-            chatUsers={getChatUsers(userId)}
-            myStream={myStream}
-          />
-        )}
+        <HStack>
+          <div>
+            <video ref={myVideoRef} autoPlay css={{width:640, height: 360, objectFit: "initial"}} />
+          </div>
+          {userId && myStream && (
+            <RTCConnectTest
+              chatRoomId={chatRoomId}
+              myInfo={{ id: userId }}
+              chatUsers={getChatUsers(userId)}
+              myStream={myStream}
+            />
+          )}
+        </HStack>
       </div>
     </div>
   )

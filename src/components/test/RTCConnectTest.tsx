@@ -1,6 +1,5 @@
 import {Account, ChatUser, useChatMessagesRTC} from "@/hooks/test/useChatMessagesRTC.ts";
-import {Button} from "@/components/ui/button.tsx";
-import {useRef} from "react";
+import {useEffect, useRef} from "react";
 
 interface Props {
   chatRoomId: number,
@@ -13,17 +12,13 @@ export function RTCConnectTest({ chatRoomId, myInfo, chatUsers, myStream }: Prop
   const yourVideoRef = useRef<HTMLVideoElement | null>(null);
   const {connect} = useChatMessagesRTC(chatRoomId, myInfo, chatUsers, myStream, yourVideoRef);
 
-  const startConnect = () => {
+  useEffect(() => {
     connect();
-  }
+  }, []);
 
   return (
     <div>
-      <Button onClick={startConnect}>connect</Button>
-      <div>
-        <div>your video</div>
-        <video ref={yourVideoRef} autoPlay width={640} height={360}/>
-      </div>
+      <video ref={yourVideoRef} autoPlay css={{width:640, height: 360, objectFit: "initial"}}/>
     </div>
   );
 }
