@@ -5,20 +5,24 @@ interface Props {
   chatRoomId: number,
   myInfo: Account,
   chatUsers: ChatUser[],
-  myStream: MediaStream,
+  localStream: MediaStream,
 }
 
-export function RTCConnectTest({ chatRoomId, myInfo, chatUsers, myStream }: Props) {
-  const yourVideoRef = useRef<HTMLVideoElement | null>(null);
-  const {connect} = useChatMessagesRTC(chatRoomId, myInfo, chatUsers, myStream, yourVideoRef);
+export function RTCConnectTest({ chatRoomId, myInfo, chatUsers, localStream }: Props) {
+  const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  const remoteStreamRef = useRef(new MediaStream());
+  const {connect} = useChatMessagesRTC(chatRoomId, myInfo, chatUsers, localStream, remoteStreamRef.current);
 
   useEffect(() => {
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = remoteStreamRef.current;
+    }
     connect();
-  }, []);
+  }, [remoteVideoRef, remoteStreamRef]);
 
   return (
     <div>
-      <video ref={yourVideoRef} autoPlay css={{width:640, height: 360, objectFit: "initial"}}/>
+      <video ref={remoteVideoRef} autoPlay css={{width:640, height: 360, objectFit: "initial"}}/>
     </div>
   );
 }

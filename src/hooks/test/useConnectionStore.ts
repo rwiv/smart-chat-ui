@@ -42,12 +42,23 @@ export class ConnMap {
     }
     return result;
   }
+
+  async replaceStream(stream: MediaStream) {
+    for (const conn of this.values()) {
+      await conn.audioSender.replaceTrack(stream.getAudioTracks()[0]);
+      await conn.videoSender.replaceTrack(stream.getVideoTracks()[0]);
+    }
+  }
 }
 
 export class RtcConnection {
   constructor(
     public readonly pc: RTCPeerConnection,
     public readonly targetId: number,
+    public readonly audioSender: RTCRtpSender,
+    public readonly videoSender: RTCRtpSender,
+    public readonly localStream: MediaStream,
+    public readonly remoteStream: MediaStream,
   ) {
   }
 

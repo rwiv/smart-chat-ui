@@ -1,4 +1,3 @@
-import React from "react";
 import {IMessage} from "@stomp/stompjs";
 import {CandidateMessage, DescriptionMessage, requestAnswer, requestCandidate, requestOffer} from "@/client/signaling.ts";
 import {createStompClient} from "@/lib/web/stomp.ts";
@@ -17,8 +16,8 @@ export function useChatMessagesRTC(
   chatRoomId: number,
   myInfo: Account,
   chatUsers: ChatUser[],
-  myStream: MediaStream,
-  yourVideoRef: React.MutableRefObject<HTMLVideoElement | null>,
+  localStream: MediaStream,
+  remoteStream: MediaStream,
 ) {
 
   const {connMap, addConn, restore} = useConnMapStore();
@@ -40,19 +39,25 @@ export function useChatMessagesRTC(
       });
     }
 
+    // receive remote stream
     pc.ontrack = async ev => {
       console.log("ontrack")
-      console.log(ev);
-      if (yourVideoRef.current) {
-        yourVideoRef.current.srcObject = ev.streams[0];
-      }
+      remoteStream.addTrack(ev.track);
     }
 
-    myStream.getTracks().forEach(track => {
-      pc.addTrack(track, myStream);
-    });
+    // send local stream
+    const videoTracks = localStream.getVideoTracks();
+    const audioTracks = localStream.getAudioTracks();
+    if (videoTracks.length !== 1 || audioTracks.length !== 1) {
+      throw Error("invalid stream");
+    }
+    const videoTrack = videoTracks[0];
+    const audioTrack = audioTracks[0];
 
-    const conn = new RtcConnection(pc, targetId);
+    const audioSender = pc.addTrack(audioTrack, localStream);
+    const videoSender = pc.addTrack(videoTrack, localStream);
+
+    const conn = new RtcConnection(pc, targetId, audioSender, videoSender, localStream, remoteStream);
     addConn(conn);
     return conn;
   }
