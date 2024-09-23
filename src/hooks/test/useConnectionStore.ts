@@ -57,7 +57,6 @@ export class RtcConnection {
     public readonly targetId: number,
     public readonly audioSender: RTCRtpSender,
     public readonly videoSender: RTCRtpSender,
-    public readonly localStream: MediaStream,
     public readonly remoteStream: MediaStream,
   ) {
   }

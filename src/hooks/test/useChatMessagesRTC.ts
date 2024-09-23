@@ -51,13 +51,11 @@ export function useChatMessagesRTC(
     if (videoTracks.length !== 1 || audioTracks.length !== 1) {
       throw Error("invalid stream");
     }
-    const videoTrack = videoTracks[0];
-    const audioTrack = audioTracks[0];
 
-    const audioSender = pc.addTrack(audioTrack, localStream);
-    const videoSender = pc.addTrack(videoTrack, localStream);
+    const audioSender = pc.addTrack(audioTracks[0], localStream);
+    const videoSender = pc.addTrack(videoTracks[0], localStream);
 
-    const conn = new RtcConnection(pc, targetId, audioSender, videoSender, localStream, remoteStream);
+    const conn = new RtcConnection(pc, targetId, audioSender, videoSender, remoteStream);
     addConn(conn);
     return conn;
   }
