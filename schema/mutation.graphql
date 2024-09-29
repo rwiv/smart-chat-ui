@@ -1,13 +1,9 @@
 type Mutation {
-    createAccount(creation: AccountCreation!): Account!
+    createAccount(creation: AccountAdd!): Account!
 
-    createChatRoom(req: ChatRoomCreateRequest!): ChatRoom!
-    createChatRoomByFriend(friendId: Long!): ChatRoom!
-    deleteChatRoom(chatRoomId: Long!): ChatRoom!
+    createChatRoom(req: ChatRoomAdd!): ChatRoom!
+    deleteChatRoom(chatRoomId: UUID!): ChatRoom!
 
-    createChatUser(chatRoomId: Long!, password: String = null): ChatUser!
-    createChatUserFromParticipant(chatRoomId: Long!, accountId: Long!): ChatUser!
-    deleteChatUserMe(chatRoomId: Long!): ChatUser!
-
-    addFriend(fromAccountId: Long!, toAccountId: Long!): Friend!
+    createChatUser(chatRoomId: UUID!, password: String = null): ChatUser!
+    deleteChatUserMe(chatRoomId: UUID!): ChatUser!
 }

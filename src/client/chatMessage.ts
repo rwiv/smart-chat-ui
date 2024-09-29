@@ -21,7 +21,7 @@ export const chatMessageColumns = gql`
 `;
 
 export const chatMessagesQL = gql`
-    query ChatMessages($chatRoomId: Long!, $page: Int!, $size: Int!, $offset: Int!) {
+    query ChatMessages($chatRoomId: UUID!, $page: Int!, $size: Int!, $offset: Int!) {
         chatMessages(chatRoomId: $chatRoomId, page: $page, size: $size, offset: $offset) {
             ...chatMessageColumns
             createdBy {
@@ -34,7 +34,7 @@ export const chatMessagesQL = gql`
 `;
 
 export const chatMessageQL = gql`
-    query ChatMessage($id: Long!) {
+    query ChatMessage($id: UUID!) {
         chatMessage(id: $id) {
             ...chatMessageColumns
             createdBy {

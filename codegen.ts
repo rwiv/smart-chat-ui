@@ -18,6 +18,7 @@ const config: CodegenConfig = {
         "scalars": {
           "Long": "number",
           "DateTime": "string",
+          "UUID": "string"
         }
       },
     }

@@ -7,12 +7,8 @@ import {useQuery} from "@/lib/web/apollo.ts";
 export const chatUserColumns = gql`
     fragment chatUserColumns on ChatUser {
         id
-        chatRoom {
-            id
-        }
-        account {
-            id
-        }
+        accountId
+        chatRoomId
         createdAt
     }
 `;
@@ -62,7 +58,7 @@ export function useMyChatUsers() {
 }
 
 const createChatUserQL = gql`
-    mutation CreateChatUser($chatRoomId: Long!, $password: String) {
+    mutation CreateChatUser($chatRoomId: UUID!, $password: String) {
         createChatUser(chatRoomId: $chatRoomId, password: $password) {
             ...chatUserColumns
         }
@@ -77,7 +73,7 @@ export function useCreateChatUser() {
 
 
 const createChatUserFromParticipantQL = gql`
-    mutation CreateChatUserFromParticipant($chatRoomId: Long!, $accountId: Long!) {
+    mutation CreateChatUserFromParticipant($chatRoomId: UUID!, $accountId: UUID!) {
         createChatUserFromParticipant(chatRoomId: $chatRoomId, accountId: $accountId) {
             ...chatUserColumns
         }
@@ -91,7 +87,7 @@ export function useCreateChatUserFromParticipant() {
 }
 
 const deleteChatUserMeQL = gql`
-    mutation DeleteChatUserMe($chatRoomId: Long!) {
+    mutation DeleteChatUserMe($chatRoomId: UUID!) {
         deleteChatUserMe(chatRoomId: $chatRoomId) {
             ...chatUserColumns
         }

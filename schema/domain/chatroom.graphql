@@ -1,23 +1,16 @@
 type ChatRoom {
-    id: Long!
-    createdBy: Account!
+    id: UUID!
     title: String!
+    createdById: UUID!
+    createdBy: Account!
     createdAt: DateTime!
-    type: ChatRoomType!
-    chatUserCnt: Int!
-    hasPassword: Boolean!
+    userCnt: Int!
 
     chatMessages: [ChatMessage!]
     chatUsers: [ChatUser!]
 }
 
-enum ChatRoomType {
-    PUBLIC
-    PRIVATE
-}
-
-input ChatRoomCreateRequest {
-    password: String
+input ChatRoomAdd {
     title: String!
-    type: ChatRoomType!
+    password: String
 }

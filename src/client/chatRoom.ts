@@ -7,14 +7,10 @@ export const defaultChatRoomSize: number = 10;
 export const chatRoomColumns = gql`
     fragment chatRoomColumns on ChatRoom {
         id
-        createdBy {
-            id
-        }
         title
+        createdById
         createdAt
-        type
-        chatUserCnt
-        hasPassword
+        userCnt
     }
 `;
 
@@ -32,7 +28,7 @@ export const chatRoomsQL = gql`
 `;
 
 const createChatRoomQL = gql`
-    mutation CreateChatRoom($req: ChatRoomCreateRequest!) {
+    mutation CreateChatRoom($req: ChatRoomAdd!) {
         createChatRoom(req: $req) {
             ...chatRoomColumns
             createdBy {
@@ -50,7 +46,7 @@ export function useCreateChatRoom() {
 }
 
 const deleteChatRoomQL = gql`
-    mutation DeleteChatRoom($chatRoomId: Long!) {
+    mutation DeleteChatRoom($chatRoomId: UUID!) {
         deleteChatRoom(chatRoomId: $chatRoomId) {
             ...chatRoomColumns
             createdBy {

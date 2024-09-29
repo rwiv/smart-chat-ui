@@ -14,6 +14,7 @@ export type Scalars = {
   Float: { input: number; output: number; }
   DateTime: { input: string; output: string; }
   Long: { input: number; output: number; }
+  UUID: { input: string; output: string; }
   _FieldSet: { input: any; output: any; }
 };
 
@@ -22,15 +23,14 @@ export type Account = {
   avatarUrl: Scalars['String']['output'];
   chatRooms?: Maybe<Array<ChatRoom>>;
   chatUsers?: Maybe<Array<ChatUser>>;
-  friends?: Maybe<Array<Friend>>;
-  id: Scalars['Long']['output'];
+  id: Scalars['UUID']['output'];
   /**     password: String! */
   nickname: Scalars['String']['output'];
   role: AccountRole;
   username: Scalars['String']['output'];
 };
 
-export type AccountCreation = {
+export type AccountAdd = {
   nickname: Scalars['String']['input'];
   password: Scalars['String']['input'];
   role: AccountRole;
@@ -48,40 +48,35 @@ export type ChatMessage = {
   content: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
   createdBy: Account;
-  id: Scalars['Long']['output'];
+  id: Scalars['UUID']['output'];
   num: Scalars['Int']['output'];
 };
 
 export type ChatRoom = {
   __typename?: 'ChatRoom';
   chatMessages?: Maybe<Array<ChatMessage>>;
-  chatUserCnt: Scalars['Int']['output'];
   chatUsers?: Maybe<Array<ChatUser>>;
   createdAt: Scalars['DateTime']['output'];
   createdBy: Account;
-  hasPassword: Scalars['Boolean']['output'];
-  id: Scalars['Long']['output'];
+  createdById: Scalars['UUID']['output'];
+  id: Scalars['UUID']['output'];
   title: Scalars['String']['output'];
-  type: ChatRoomType;
+  userCnt: Scalars['Int']['output'];
 };
 
-export type ChatRoomCreateRequest = {
+export type ChatRoomAdd = {
   password?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
-  type: ChatRoomType;
 };
-
-export enum ChatRoomType {
-  Private = 'PRIVATE',
-  Public = 'PUBLIC'
-}
 
 export type ChatUser = {
   __typename?: 'ChatUser';
   account: Account;
+  accountId: Scalars['UUID']['output'];
   chatRoom: ChatRoom;
+  chatRoomId: Scalars['UUID']['output'];
   createdAt: Scalars['DateTime']['output'];
-  id: Scalars['Long']['output'];
+  id: Scalars['UUID']['output'];
 };
 
 export enum ErrorDetail {
@@ -323,19 +318,10 @@ export enum ErrorType {
   Unknown = 'UNKNOWN'
 }
 
-export type Friend = {
-  __typename?: 'Friend';
-  from?: Maybe<Account>;
-  id?: Maybe<Scalars['Long']['output']>;
-  to?: Maybe<Account>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  addFriend: Friend;
   createAccount: Account;
   createChatRoom: ChatRoom;
-  createChatRoomByFriend: ChatRoom;
   createChatUser: ChatUser;
   createChatUserFromParticipant: ChatUser;
   deleteChatRoom: ChatRoom;
@@ -343,46 +329,35 @@ export type Mutation = {
 };
 
 
-export type MutationAddFriendArgs = {
-  fromAccountId: Scalars['Long']['input'];
-  toAccountId: Scalars['Long']['input'];
-};
-
-
 export type MutationCreateAccountArgs = {
-  creation: AccountCreation;
+  creation: AccountAdd;
 };
 
 
 export type MutationCreateChatRoomArgs = {
-  req: ChatRoomCreateRequest;
-};
-
-
-export type MutationCreateChatRoomByFriendArgs = {
-  friendId: Scalars['Long']['input'];
+  req: ChatRoomAdd;
 };
 
 
 export type MutationCreateChatUserArgs = {
-  chatRoomId: Scalars['Long']['input'];
+  chatRoomId: Scalars['UUID']['input'];
   password?: InputMaybe<Scalars['String']['input']>;
 };
 
 
 export type MutationCreateChatUserFromParticipantArgs = {
-  accountId: Scalars['Long']['input'];
-  chatRoomId: Scalars['Long']['input'];
+  accountId: Scalars['UUID']['input'];
+  chatRoomId: Scalars['UUID']['input'];
 };
 
 
 export type MutationDeleteChatRoomArgs = {
-  chatRoomId: Scalars['Long']['input'];
+  chatRoomId: Scalars['UUID']['input'];
 };
 
 
 export type MutationDeleteChatUserMeArgs = {
-  chatRoomId: Scalars['Long']['input'];
+  chatRoomId: Scalars['UUID']['input'];
 };
 
 export type Query = {
@@ -407,17 +382,17 @@ export type QueryAccountArgs = {
 
 
 export type QueryAccountsArgs = {
-  id?: InputMaybe<Scalars['Long']['input']>;
+  id?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 
 export type QueryChatMessageArgs = {
-  id: Scalars['Long']['input'];
+  id: Scalars['UUID']['input'];
 };
 
 
 export type QueryChatMessagesArgs = {
-  chatRoomId: Scalars['Long']['input'];
+  chatRoomId: Scalars['UUID']['input'];
   offset: Scalars['Int']['input'];
   page: Scalars['Int']['input'];
   size: Scalars['Int']['input'];
@@ -425,7 +400,7 @@ export type QueryChatMessagesArgs = {
 
 
 export type QueryChatRoomArgs = {
-  id?: InputMaybe<Scalars['Long']['input']>;
+  id?: InputMaybe<Scalars['UUID']['input']>;
 };
 
 

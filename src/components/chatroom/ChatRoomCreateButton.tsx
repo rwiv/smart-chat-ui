@@ -10,7 +10,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {useRef, useState} from "react";
-import {ChatRoom, ChatRoomCreateRequest, ChatRoomType} from "@/graphql/types.ts";
+import {ChatRoom, ChatRoomAdd} from "@/graphql/types.ts";
 import {useCreateChatRoom} from "@/client/chatRoom.ts";
 import { MdAddCircle } from "react-icons/md";
 import {Center} from "@/lib/style/layouts.tsx";
@@ -34,11 +34,10 @@ export function ChatRoomCreateButton({ addChatRoom }: ChatRoomCreateButtonProps)
   };
 
   const onAddChatRoom = async () => {
-    const variables: {req: ChatRoomCreateRequest} = {
+    const variables: {req: ChatRoomAdd} = {
       req: {
         password: isPrivate ? password : null,
         title: chatRoomInput,
-        type: ChatRoomType.Public,
       },
     };
     const res = await createChatRoom({variables});

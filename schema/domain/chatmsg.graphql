@@ -1,5 +1,5 @@
 type ChatMessage {
-    id: Long!
+    id: UUID!
     chatRoom: ChatRoom!
     createdBy: Account!
     content: String!

@@ -1,5 +1,5 @@
 type Account {
-    id: Long!
+    id: UUID!
     role: AccountRole!
     username: String!
 #    password: String!
@@ -8,7 +8,6 @@ type Account {
 
     chatUsers: [ChatUser!]
     chatRooms: [ChatRoom!]
-    friends: [Friend!]
 }
 
 enum AccountRole {
@@ -16,15 +15,9 @@ enum AccountRole {
     ADMIN
 }
 
-input AccountCreation {
+input AccountAdd {
     role: AccountRole!
     username: String!
     password: String!
     nickname: String!
-}
-
-type Friend {
-    id: Long
-    from: Account
-    to: Account
 }

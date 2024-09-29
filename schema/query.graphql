@@ -1,15 +1,15 @@
 type Query {
     accountsAll: [Account!]
     account(username: String = null): Account
-    accounts(id: Long): Account
+    accounts(id: UUID): Account
 
     chatRoomsAll: [ChatRoom!]
-    chatRoom(id: Long): ChatRoom
+    chatRoom(id: UUID): ChatRoom
     chatRooms(page: Int!, size: Int!): [ChatRoom!]
 
     chatUsersAll: [ChatUser!]
 
-    chatMessage(id: Long!): ChatMessage
-    chatMessages(chatRoomId: Long!, page: Int!, size: Int!, offset: Int!): [ChatMessage!]
+    chatMessage(id: UUID!): ChatMessage
+    chatMessages(chatRoomId: UUID!, page: Int!, size: Int!, offset: Int!): [ChatMessage!]
     chatMessagesAll: [ChatMessage!]
 }
