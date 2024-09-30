@@ -1,6 +1,5 @@
 import {mq} from "@/lib/style/mediaQueries.ts";
 import {LeftSidebar} from "@/components/layouts/LeftSidebar.tsx";
-import {ChatRoomContent} from "@/components/layouts/ChatRoomContent.tsx";
 import {containerStyle, flexStyle} from "@/styles/globalStyles.ts";
 import {useEffect} from "react";
 import {useCurChatRoomStore} from "@/hooks/chatroom/useCurChatRoomStore.ts";
@@ -18,7 +17,8 @@ export function IndexPage() {
 
   useEffect(() => {
     setCurChatRoom(null);
-    setSidebarState("CHATROOM");
+    // setSidebarState("CHATROOM");
+    setSidebarState("SEARCH");
   }, [params]);
 
   return (
@@ -26,8 +26,8 @@ export function IndexPage() {
       <div css={[left, flexStyle]}>
         <LeftSidebar/>
       </div>
-      <div css={[right, flexStyle, {background: "#eeeeee"}]}>
-        <ChatRoomContent chatRoomId={-1}/>
+      <div css={[right, flexStyle, {background: "#ffffff"}]}>
+        {/*<ChatRoomContent chatRoomId={-1}/>*/}
       </div>
     </div>
   )

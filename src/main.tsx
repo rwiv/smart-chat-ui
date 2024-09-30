@@ -9,10 +9,11 @@ import {ChatRoomPage} from "@/pages/ChatRoomPage.tsx";
 import {SignupPage} from "@/pages/SignupPage.tsx";
 import {LoginPage} from "@/pages/LoginPage.tsx";
 import {TestPage} from "@/dev/pages/TestPage.tsx";
-import {RTCTestPage} from "@/pages/RTCTestPage.tsx";
+import {IndexPage} from "@/pages/IndexPage.tsx";
 
 const routes: RouteObject[] = [
-  { path: '/', element: <RTCTestPage /> },
+  { path: '/', element: <IndexPage /> },
+  // { path: '/', element: <RTCTestPage /> },
   { path: '/chat-rooms/:chatRoomId', element: <ChatRoomPage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/signup', element: <SignupPage /> },

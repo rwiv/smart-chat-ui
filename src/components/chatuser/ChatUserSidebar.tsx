@@ -2,7 +2,6 @@ import {ChatUserSidebarList} from "@/components/chatuser/ChatUserSidebarList.tsx
 import {css} from "@emotion/react";
 import {ChatUser} from "@/graphql/types.ts";
 import {HStack} from "@/lib/style/layouts.tsx";
-import {InviteChatUserButton} from "@/components/chatuser/InviteChatUserButton.tsx";
 import {rightAlignStyle} from "@/styles/globalStyles.ts";
 import {useMyInfo} from "@/hooks/common/useMyInfo.ts";
 
@@ -34,7 +33,7 @@ export function ChatUserSidebar({ chatUsers }: ChatUserSidebarProps) {
         <HStack>
           <label css={nameStyle}>유저</label>
           <div css={rightAlignStyle}>
-            <InviteChatUserButton chatUsers={chatUsers} />
+            {/*<InviteChatUserButton chatUsers={chatUsers} />*/}
           </div>
         </HStack>
       </div>

@@ -5,7 +5,7 @@ import {chatRoomsQL, defaultChatRoomSize} from "@/client/chatRoom.ts";
 import {useIntersect} from "@/hooks/common/useIntersect.ts";
 import type {QueryOptions} from "@apollo/client/core/watchQueryOptions";
 
-export function useChatRooms() {
+export function useSearchedChatRooms() {
 
   const client = useApolloClient();
   const [page, setPage] = useState(1);
@@ -57,7 +57,7 @@ export function useChatRooms() {
     setChatRooms(prev => [chatRoom, ...prev]);
   }
 
-  const removeChatRoom = (chatRoomId: number) => {
+  const removeChatRoom = (chatRoomId: string) => {
     setChatRooms(prev => prev.filter(it => it.id !== chatRoomId));
   }
 

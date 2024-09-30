@@ -58,7 +58,7 @@ export function ChatRoomCreateButton({ addChatRoom }: ChatRoomCreateButtonProps)
       <DialogTrigger asChild>
         <button>
           <Center>
-            <MdAddCircle size="2rem" color="#ffffff" />
+            <MdAddCircle size="2rem" color="#5a6068" />
           </Center>
         </button>
       </DialogTrigger>

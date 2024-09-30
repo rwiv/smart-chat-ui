@@ -16,8 +16,8 @@ const userInfoStyle = css`
   display: flex;
   align-items: center;
   padding: 10px;
-  color: white;
-  border-top: 2px solid #e2e2e2;
+  color: #5a6068;
+  outline: solid #f0f2f4 0.1rem;
 `;
 
 export function MyInfo() {
@@ -66,7 +66,7 @@ export function MyInfo() {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <div css={{marginLeft: "0.7rem"}}>
+      <div css={{marginLeft: "1.1rem"}}>
         <div className="font-semibold">{myInfo?.nickname}</div>
         <div>{myInfo?.username}</div>
       </div>

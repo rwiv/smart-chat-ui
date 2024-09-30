@@ -1,6 +1,6 @@
 import {gql} from "@apollo/client";
 import {consts} from "@/configures/consts.ts";
-import {AccountCreation} from "@/graphql/types.ts";
+import {AccountAdd} from "@/graphql/types.ts";
 import {post} from "@/lib/web/http.ts";
 
 export const accountColumns = gql`
@@ -22,7 +22,7 @@ export const myInfoQL = gql`
     ${accountColumns}
 `;
 
-export function signup(creation: AccountCreation) {
+export function signup(creation: AccountAdd) {
   return post(`${consts.endpoint}/api/auth/signup`, creation);
 }
 

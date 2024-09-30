@@ -13,10 +13,10 @@ export const chatUserColumns = gql`
     }
 `;
 
-export function chatRoomAndUsersByIdQL(id: number) {
+export function chatRoomAndUsersByIdQL(id: string) {
     return gql`
         query ChatRoomAndUsersById {
-            chatRoom(id: ${id}) {
+            chatRoom(id: "${id}") {
                 ...chatRoomColumns
                 chatUsers {
                     ...chatUserColumns
@@ -32,7 +32,7 @@ export function chatRoomAndUsersByIdQL(id: number) {
     `;
 }
 
-export function useChatRoomAndUsers(chatRoomId: number) {
+export function useChatRoomAndUsers(chatRoomId: string) {
     return useQuery(chatRoomAndUsersByIdQL(chatRoomId));
 }
 

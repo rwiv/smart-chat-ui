@@ -59,6 +59,7 @@ export type ChatRoom = {
   createdAt: Scalars['DateTime']['output'];
   createdBy: Account;
   createdById: Scalars['UUID']['output'];
+  hasPassword: Scalars['Boolean']['output'];
   id: Scalars['UUID']['output'];
   title: Scalars['String']['output'];
   userCnt: Scalars['Int']['output'];
@@ -323,7 +324,6 @@ export type Mutation = {
   createAccount: Account;
   createChatRoom: ChatRoom;
   createChatUser: ChatUser;
-  createChatUserFromParticipant: ChatUser;
   deleteChatRoom: ChatRoom;
   deleteChatUserMe: ChatUser;
 };
@@ -342,12 +342,6 @@ export type MutationCreateChatRoomArgs = {
 export type MutationCreateChatUserArgs = {
   chatRoomId: Scalars['UUID']['input'];
   password?: InputMaybe<Scalars['String']['input']>;
-};
-
-
-export type MutationCreateChatUserFromParticipantArgs = {
-  accountId: Scalars['UUID']['input'];
-  chatRoomId: Scalars['UUID']['input'];
 };
 
 

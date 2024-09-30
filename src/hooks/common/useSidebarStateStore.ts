@@ -1,6 +1,6 @@
 import {create} from 'zustand';
 
-export type SidebarState = "FRIEND" | "CHATROOM" | "SEARCH";
+export type SidebarState = "CHATROOM" | "VIDEO" | "SEARCH";
 
 interface GlobalState {
   sidebarState: SidebarState;

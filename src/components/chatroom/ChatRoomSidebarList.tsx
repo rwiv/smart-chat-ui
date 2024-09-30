@@ -5,7 +5,6 @@ import {css} from "@emotion/react";
 import {useNavigate} from "react-router";
 import {useCurChatRoomStore} from "@/hooks/chatroom/useCurChatRoomStore.ts";
 import {HStack} from "@/lib/style/layouts.tsx";
-import {useSidebarStateStore} from "@/hooks/common/useSidebarStateStore.ts";
 import React, {useRef, useState} from "react";
 import {PasswordInputDialog} from "@/components/chatroom/PasswordInputDialog.tsx";
 import {getPrettyDateString} from "@/lib/common/date.ts";
@@ -30,13 +29,11 @@ const listStyle = css`
 `;
 
 const itemFrameStyle = css`
-  color: #ffffff;
+  color: #5a6068;
+  background-color: #f3f5f7;
   padding: 0.7rem;
   margin: 0.3rem;
   cursor: pointer;
-  border-color: #555555;
-  border-width: thin;
-  border-radius: 0.375rem;
 `;
 
 interface ChatRoomListProps {
@@ -52,7 +49,7 @@ export function ChatRoomSidebarList({ myInfo, chatRooms, observerRef }: ChatRoom
 
   const {createChatUser} = useCreateChatUser();
   const {setCurChatRoom} = useCurChatRoomStore();
-  const {setSidebarState} = useSidebarStateStore();
+  // const {setSidebarState} = useSidebarStateStore();
 
   const openRef = useRef<HTMLButtonElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -65,21 +62,24 @@ export function ChatRoomSidebarList({ myInfo, chatRooms, observerRef }: ChatRoom
       // 이전 cache가 적용되어 exit하지 않은 것으로 처리되어 에러 발생
       fetchPolicy: "network-only",
     });
-    const filtered = data.data?.chatRoom?.chatUsers?.filter(it => {
-      return it.account.id === myInfo?.id;
-    });
+    const filtered = data.data
+      ?.chatRoom?.chatUsers
+      ?.filter(it => it.account.id === myInfo?.id);
+
     if (filtered?.length === 0) {
       if (chatRoom.hasPassword) {
         setPasswordChatRoom(chatRoom);
         openRef.current?.click();
         return;
       }
-      const variables = { chatRoomId: chatRoom.id };
-      const res = await createChatUser({variables});
-      console.log(res.data);
+      if (chatRoom.createdBy.id !== myInfo?.id) {
+        const variables = { chatRoomId: chatRoom.id };
+        const res = await createChatUser({variables});
+        console.log(res.data);
+      }
     }
     setCurChatRoom(chatRoom);
-    setSidebarState("CHATROOM");
+    // setSidebarState("CHATROOM");
     navigate(`/chat-rooms/${chatRoom.id}`);
   }
 
@@ -102,17 +102,17 @@ export function ChatRoomSidebarList({ myInfo, chatRooms, observerRef }: ChatRoom
                 {chatRoom?.hasPassword && (<span><LockIcon style={{ marginLeft: '1rem', width: '1rem', height: '1rem' }} /></span>)}
               </div>
               <div>
-                <div css={{color: "#aaaaaa", fontSize: "0.9rem"}}>
+                <div css={{color: "#5a6068", fontSize: "0.9rem"}}>
                   {getPrettyDateString(chatRoom.createdAt)}
                 </div>
               </div>
             </HStack>
             <HStack>
               <div css={{width: "50%"}}>
-                <div css={{color: "#eeeeee", fontSize: "0.9rem"}}>{chatRoom.createdBy.nickname}</div>
+                <div css={{color: "#5a6068", fontSize: "0.9rem"}}>{chatRoom.createdBy.nickname}</div>
               </div>
               <div>
-                <div css={{color: "#eeeeee", fontSize: "0.9rem"}}>{chatRoom.chatUserCnt}명 참여중</div>
+                <div css={{color: "#5a6068", fontSize: "0.9rem"}}>{chatRoom.userCnt}명 참여중</div>
               </div>
             </HStack>
           </div>

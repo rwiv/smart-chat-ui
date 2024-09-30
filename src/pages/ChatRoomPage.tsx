@@ -1,21 +1,19 @@
 import {useParams} from "react-router";
 import {useEffect} from "react";
 import {mq} from "@/lib/style/mediaQueries.ts";
-import {ChatRoomContent} from "@/components/layouts/ChatRoomContent.tsx";
 import {LeftSidebar} from "@/components/layouts/LeftSidebar.tsx";
 import {containerStyle, flexStyle} from "@/styles/globalStyles.ts";
-import {useChatMessagesRefreshStore} from "@/hooks/chatmessage/useChatMessagesRefreshStore.ts";
 import {useCurChatRoomStore} from "@/hooks/chatroom/useCurChatRoomStore.ts";
 
-const left = mq.m_all(0, 0, 3, 3, 3, 3);
-const right = mq.m_all(12, 12, 9, 9, 9, 9);
+const left = mq.m_all(2,2,3,3,3,3);
+const right = mq.m_all(10,10,9, 9,9,9);
 
 export function ChatRoomPage() {
 
   const params = useParams();
   const chatRoomId = getChatRoomId();
 
-  const {refresh} = useChatMessagesRefreshStore();
+  // const {refresh} = useChatMessagesRefreshStore();
   const {setCurChatRoomId} = useCurChatRoomStore();
 
   function getChatRoomId() {
@@ -32,19 +30,19 @@ export function ChatRoomPage() {
 
   useEffect(() => {
     setCurChatRoomId(chatRoomId)
-    refresh();
+    // refresh();
   }, [params]);
 
   return (
     <div css={containerStyle}>
-      {/*<DccMapTest params={params} />*/}
       <div css={[left, flexStyle]}>
         <LeftSidebar/>
       </div>
-      <div css={[right, flexStyle, {background: "#eeeeee"}]}>
-        {chatRoomId !== null && (
-          <ChatRoomContent chatRoomId={chatRoomId}/>
-        )}
+      <div css={[right, flexStyle, {background: "#ffffff"}]}>
+        {/*{chatRoomId !== null && (*/}
+        {/*  <ChatRoomContent chatRoomId={chatRoomId}/>*/}
+        {/*)}*/}
+        {chatRoomId}
       </div>
     </div>
   )
