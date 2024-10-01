@@ -1,60 +1,51 @@
-import {ChatRoomSearchSidebar} from "@/components/chatroom/ChatRoomSearchSidebar.tsx";
 import {css} from "@emotion/react";
-import {Center} from "@/lib/style/layouts.tsx";
-import {MdOutlineVideoLibrary} from "react-icons/md";
-import {MdOutlineMessage} from "react-icons/md";
-import {MdOutlineSearch} from "react-icons/md";
-import {mq} from "@/lib/style/mediaQueries.ts";
-import {useSidebarStateStore} from "@/hooks/common/useSidebarStateStore.ts";
-
-const navSidebarStyle = css`
-    display: flex;
-    flex-direction: column;
-    background-color: #f9fafb;
-`;
+import {Link} from "react-router-dom";
+import {MyInfo} from "@/components/account/MyInfo.tsx";
+import {ReactNode} from "react";
+import {SIDEBAR_FONT} from "@/styles/colors.ts";
 
 const mainSidebarStyle = css`
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100vh;
   background-color: #f9fafb;
   border: solid #f0f2f4 0.1rem;
   overflow-y: auto;
 `;
 
-const left = mq.m_all(2,2,2, 2, 2, 2);
-const right = mq.m_all(10,10, 10, 10, 10, 10);
-
-const iconSize = "2.0rem";
-const iconColor = "#5a6068";
-
 export function LeftSidebar() {
 
-  const {sidebarState, setSidebarState} = useSidebarStateStore();
-
   return (
-    <>
-      <div css={[navSidebarStyle, left]}>
-        <button onClick={() => setSidebarState("CHATROOM")}>
-          <Center className="mt-5">
-            <MdOutlineMessage size={iconSize} color={iconColor}/>
-          </Center>
-        </button>
-        <button onClick={() => setSidebarState("VIDEO")}>
-          <Center className="mt-5">
-            <MdOutlineVideoLibrary size={iconSize} color={iconColor}/>
-          </Center>
-        </button>
-        <button onClick={() => setSidebarState("SEARCH")}>
-          <Center className="mt-5">
-            <MdOutlineSearch size={iconSize} color={iconColor}/>
-          </Center>
-        </button>
-      </div>
-      <div css={[mainSidebarStyle, right]}>
-        {/*{sidebarState === "FRIEND" && <FriendSidebar />}*/}
-        {/*{sidebarState === "CHATROOM" && <ParticipatedChatRoomSidebar />}*/}
-        {sidebarState === "SEARCH" && <ChatRoomSearchSidebar/>}
-      </div>
-    </>
+    <div css={mainSidebarStyle}>
+      <MyInfo />
+
+      <div className="mt-1" />
+      <Link to={"/"}>
+        <SidebarButton>채팅방</SidebarButton>
+      </Link>
+      <Link to={"/"}>
+        <SidebarButton>다시보기</SidebarButton>
+      </Link>
+    </div>
+  )
+}
+
+export function SidebarButton({children}: { children: ReactNode }) {
+  return (
+    <div className="rounded-sm px-1 py-2" css={css`
+      color: ${SIDEBAR_FONT};
+      margin: 0.2rem 0.3rem;
+      padding: 0.5rem;
+      font-weight: 500;
+      font-size: 1.1rem;
+      cursor: pointer;
+
+      &:hover {
+        background: #f3f5f7;
+      }
+    `}>
+      {children}
+    </div>
   )
 }

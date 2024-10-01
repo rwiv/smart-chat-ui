@@ -6,18 +6,12 @@ import {useMediaStreamStore} from "@/hooks/webrtc/useMediaStreamStore.ts";
 import {RtcVideo} from "@/components/webrtc/RtcVideo.tsx";
 import {HStack, VStack} from "@/lib/style/layouts.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {css} from "@emotion/react";
 import {useApolloClient} from "@apollo/client";
 import {updateSharedChatUserQL} from "@/client/chatRoom.ts";
 import {useStompStore} from "@/hooks/websocket/useStompStore.ts";
 import {Container} from "@/lib/common/container.ts";
-
-const buttonStyle = css`
-  background: #007eff;
-  width: 6rem;
-  height: 2.7rem;
-  font-size: 0.9rem;
-`;
+import {buttonStyle} from "@/styles/buttonStyles.ts";
+import {css} from "@emotion/react";
 
 interface ChatMessagesContentProps {
   chatRoom: ChatRoom;
@@ -108,47 +102,48 @@ export function RtcMediaContent({ chatRoom, myInfo, chatUsers }: ChatMessagesCon
   }
 
   return (
-    <div>
-      <VStack>
-        <HStack className="mt-3 mb-3 ml-4 mr-5" css={{justifyContent: "space-between"}}>
-          <div></div>
-          <div>
-            {sharedId && findSharedUser().account.id === myInfo.id && (
-              <Button css={buttonStyle} onClick={onCloseShare}>공유 종료</Button>
-            )}
-            {sharedId === undefined && (
-              <Button css={buttonStyle} onClick={onStartShare}>화면 공유</Button>
-            )}
-          </div>
-        </HStack>
-        {sharedId ? (
-          <VStack>
-            <HStack>
-              {localStream && (
-                <RtcVideo mediaStream={localStream} account={myInfo} type={"SHARED_SUB"} />
-              )}
-              {connMap.values().map(it => (
-                <RtcVideo key={it.target.id} mediaStream={it.remoteStream} account={it.target.account} type={"SHARED_SUB"} />
-              ))}
-            </HStack>
-            <div>
-              {new Container(findSharedAccountAndStream()).map(([account, mediaStream]) => {
-                if (!mediaStream) return null;
-                return (<RtcVideo mediaStream={mediaStream} account={account} type={"SHARED_MAIN"}/>)
-              })}
-            </div>
-          </VStack>
-        ) : (
+    <VStack css={{margin: "0.5rem 1rem"}}>
+      <HStack className="mt-3 mb-3 ml-4 mr-5" css={{justifyContent: "space-between"}}>
+        <div css={css`
+            font-weight: 600;
+            font-size: 1.4rem;
+          `}>{chatRoom.title}</div>
+        <div>
+          {sharedId && findSharedUser().account.id === myInfo.id && (
+            <Button css={buttonStyle} onClick={onCloseShare}>공유 종료</Button>
+          )}
+          {sharedId === undefined && (
+            <Button css={buttonStyle} onClick={onStartShare}>화면 공유</Button>
+          )}
+        </div>
+      </HStack>
+      {sharedId ? (
+        <VStack>
           <HStack>
             {localStream && (
-              <RtcVideo mediaStream={localStream} account={myInfo} type={"DEFAULT"} />
+              <RtcVideo mediaStream={localStream} account={myInfo} type={"SHARED_SUB"} />
             )}
             {connMap.values().map(it => (
-              <RtcVideo key={it.target.id} mediaStream={it.remoteStream} account={it.target.account} type={"DEFAULT"} />
+              <RtcVideo key={it.target.id} mediaStream={it.remoteStream} account={it.target.account} type={"SHARED_SUB"} />
             ))}
           </HStack>
-        )}
-      </VStack>
-    </div>
+          <div>
+            {new Container(findSharedAccountAndStream()).map(([account, mediaStream]) => {
+              if (!mediaStream) return null;
+              return (<RtcVideo mediaStream={mediaStream} account={account} type={"SHARED_MAIN"}/>)
+            })}
+          </div>
+        </VStack>
+      ) : (
+        <HStack>
+          {localStream && (
+            <RtcVideo mediaStream={localStream} account={myInfo} type={"DEFAULT"} />
+          )}
+          {connMap.values().map(it => (
+            <RtcVideo key={it.target.id} mediaStream={it.remoteStream} account={it.target.account} type={"DEFAULT"} />
+          ))}
+        </HStack>
+      )}
+    </VStack>
   )
 }

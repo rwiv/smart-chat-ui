@@ -9,6 +9,7 @@ import React, {useRef, useState} from "react";
 import {PasswordInputDialog} from "@/components/chatroom/PasswordInputDialog.tsx";
 import {getPrettyDateString} from "@/lib/common/date.ts";
 import { LockIcon } from "lucide-react";
+import {SIDEBAR_FONT} from "@/styles/colors.ts";
 
 const listStyle = css`
   overflow-y: auto;
@@ -29,7 +30,7 @@ const listStyle = css`
 `;
 
 const itemFrameStyle = css`
-  color: #5a6068;
+  color: ${SIDEBAR_FONT};
   background-color: #f3f5f7;
   padding: 0.7rem;
   margin: 0.3rem;
@@ -102,17 +103,17 @@ export function ChatRoomSidebarList({ myInfo, chatRooms, observerRef }: ChatRoom
                 {chatRoom?.hasPassword && (<span><LockIcon style={{ marginLeft: '1rem', width: '1rem', height: '1rem' }} /></span>)}
               </div>
               <div>
-                <div css={{color: "#5a6068", fontSize: "0.9rem"}}>
+                <div css={{color: SIDEBAR_FONT, fontSize: "0.9rem"}}>
                   {getPrettyDateString(chatRoom.createdAt)}
                 </div>
               </div>
             </HStack>
             <HStack>
               <div css={{width: "50%"}}>
-                <div css={{color: "#5a6068", fontSize: "0.9rem"}}>{chatRoom.createdBy.nickname}</div>
+                <div css={{color: SIDEBAR_FONT, fontSize: "0.9rem"}}>{chatRoom.createdBy.nickname}</div>
               </div>
               <div>
-                <div css={{color: "#5a6068", fontSize: "0.9rem"}}>{chatRoom.userCnt}명 참여중</div>
+                <div css={{color: SIDEBAR_FONT, fontSize: "0.9rem"}}>{chatRoom.userCnt}명 참여중</div>
               </div>
             </HStack>
           </div>

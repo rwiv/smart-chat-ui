@@ -12,9 +12,8 @@ import {Input} from "@/components/ui/input.tsx";
 import {useRef, useState} from "react";
 import {ChatRoom, ChatRoomAdd} from "@/graphql/types.ts";
 import {useCreateChatRoom} from "@/client/chatRoom.ts";
-import { MdAddCircle } from "react-icons/md";
-import {Center} from "@/lib/style/layouts.tsx";
 import { Checkbox } from "@/components/ui/checkbox"
+import {buttonStyle} from "@/styles/buttonStyles.ts";
 
 interface ChatRoomCreateButtonProps {
   addChatRoom: (chatRoom: ChatRoom) => void;
@@ -56,11 +55,7 @@ export function ChatRoomCreateButton({ addChatRoom }: ChatRoomCreateButtonProps)
   return (
     <Dialog onOpenChange={() => true}>
       <DialogTrigger asChild>
-        <button>
-          <Center>
-            <MdAddCircle size="2rem" color="#5a6068" />
-          </Center>
-        </button>
+        <Button css={buttonStyle}>채팅방 생성</Button>
       </DialogTrigger>
       <DialogClose ref={ref}></DialogClose>
       <DialogContent className="sm:max-w-[425px]">

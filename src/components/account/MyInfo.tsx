@@ -11,13 +11,14 @@ import {useMyInfo} from "@/hooks/common/useMyInfo.ts";
 import {css} from "@emotion/react";
 import {consts} from "@/configures/consts.ts";
 import {iconStyle} from "@/styles/globalStyles.ts";
+import {SIDEBAR_FONT} from "@/styles/colors.ts";
 
 const userInfoStyle = css`
   display: flex;
   align-items: center;
   padding: 10px;
-  color: #5a6068;
-  outline: solid #f0f2f4 0.1rem;
+  color: ${SIDEBAR_FONT};
+  //outline: solid #f0f2f4 0.1rem;
 `;
 
 export function MyInfo() {

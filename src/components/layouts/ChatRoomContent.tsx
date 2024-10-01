@@ -11,6 +11,11 @@ const mainContentStyle = css`
   outline: solid #f0f2f4 0.1rem;
 `;
 
+const mainContentStyle2 = css`
+  width: 100%;
+  outline: solid #f0f2f4 0.1rem;
+`;
+
 const sidebarStyle = css`
   display: flex;
   flex-direction: column;
@@ -31,21 +36,25 @@ export function ChatRoomContent({ chatRoomId }: ChatRoomContentProps) {
   const chatUsers = usersData?.chatRoom?.chatUsers ?? undefined;
 
   return (
-    <>
-      <div css={[left, mainContentStyle]}>
-        {/*<ChatRoomContentHeader />*/}
-        {/*{myInfo !== undefined && chatUsers !== undefined && (*/}
-        {/*  <ChatMessagesContent chatRoomId={chatRoomId} myInfo={myInfo} chatUsers={chatUsers} />)*/}
-        {/*}*/}
-        {myInfo && chatRoom && chatUsers && (
-          <RtcMediaContent chatRoom={chatRoom} myInfo={myInfo} chatUsers={chatUsers} />)
-        }
-      </div>
-      <div css={[right, sidebarStyle]}>
-        {chatUsers !== undefined &&
-          (<ChatSidebar chatRoomId={chatRoomId} />)
-        }
-      </div>
-    </>
+    <div css={mainContentStyle2}>
+      {myInfo && chatRoom && chatUsers && (
+        <RtcMediaContent chatRoom={chatRoom} myInfo={myInfo} chatUsers={chatUsers} />)
+      }
+    </div>
   )
+
+  // return (
+  //   <>
+  //     <div css={[left, mainContentStyle]}>
+  //       {myInfo && chatRoom && chatUsers && (
+  //         <RtcMediaContent chatRoom={chatRoom} myInfo={myInfo} chatUsers={chatUsers} />)
+  //       }
+  //     </div>
+  //     <div css={[right, sidebarStyle]}>
+  //       {chatUsers !== undefined &&
+  //         (<ChatSidebar chatRoomId={chatRoomId} />)
+  //       }
+  //     </div>
+  //   </>
+  // )
 }

@@ -3,17 +3,18 @@ import ReactDOM from "react-dom/client";
 import {createHashRouter, RouteObject} from "react-router-dom";
 import {RouterProvider} from "react-router";
 import {ApolloClient, ApolloProvider, HttpLink, InMemoryCache} from "@apollo/client";
-import {AccountSelectPage} from "@/dev/pages/AccountSelectPage.tsx";
+import {AccountSelectPage} from "@/pages/AccountSelectPage.tsx";
 import {consts} from "@/configures/consts.ts";
 import {ChatRoomPage} from "@/pages/ChatRoomPage.tsx";
 import {SignupPage} from "@/pages/SignupPage.tsx";
 import {LoginPage} from "@/pages/LoginPage.tsx";
-import {TestPage} from "@/dev/pages/TestPage.tsx";
 import {IndexPage} from "@/pages/IndexPage.tsx";
+import {TestPage} from "@/pages/TestPage.tsx";
+import {ChatRoomListPage} from "@/pages/ChatRoomListPage.tsx";
 
 const routes: RouteObject[] = [
   { path: '/', element: <IndexPage /> },
-  // { path: '/', element: <RTCTestPage /> },
+  { path: '/chat-rooms', element: <ChatRoomListPage /> },
   { path: '/chat-rooms/:chatRoomId', element: <ChatRoomPage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/signup', element: <SignupPage /> },
