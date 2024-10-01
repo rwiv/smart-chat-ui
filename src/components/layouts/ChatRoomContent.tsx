@@ -27,6 +27,7 @@ export function ChatRoomContent({ chatRoomId }: ChatRoomContentProps) {
 
   const {myInfo} = useMyInfo();
   const {data: usersData} = useChatRoomAndUsers(chatRoomId);
+  const chatRoom = usersData?.chatRoom ?? undefined;
   const chatUsers = usersData?.chatRoom?.chatUsers ?? undefined;
 
   return (
@@ -36,8 +37,8 @@ export function ChatRoomContent({ chatRoomId }: ChatRoomContentProps) {
         {/*{myInfo !== undefined && chatUsers !== undefined && (*/}
         {/*  <ChatMessagesContent chatRoomId={chatRoomId} myInfo={myInfo} chatUsers={chatUsers} />)*/}
         {/*}*/}
-        {myInfo !== undefined && chatUsers !== undefined && (
-          <RtcMediaContent chatRoomId={chatRoomId} myInfo={myInfo} chatUsers={chatUsers} />)
+        {myInfo && chatRoom && chatUsers && (
+          <RtcMediaContent chatRoom={chatRoom} myInfo={myInfo} chatUsers={chatUsers} />)
         }
       </div>
       <div css={[right, sidebarStyle]}>

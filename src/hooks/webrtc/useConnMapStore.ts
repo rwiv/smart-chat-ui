@@ -5,8 +5,8 @@ import {RtcConnection} from "@/hooks/webrtc/RtcConnection.ts";
 export interface ConnMapGlobalState {
   connMap: ConnMap;
   addConn: (dcc: RtcConnection) => void;
-  restore: () => void;
-  refresh: () => void;
+  restoreConnMap: () => void;
+  refreshConnMap: () => void;
 }
 
 export const useConnMapStore = create<ConnMapGlobalState>((set) => ({
@@ -16,11 +16,11 @@ export const useConnMapStore = create<ConnMapGlobalState>((set) => ({
     connMap.add(dcc);
     return { ...prev, connMap };
   }),
-  restore: () => set(prev => {
+  restoreConnMap: () => set(prev => {
     const connMap = prev.connMap;
     connMap.restore();
     return { ...prev, connMap };
   }),
-  refresh: () => set(prev => ({ ...prev })),
+  refreshConnMap: () => set(prev => ({ ...prev })),
 }));
 

@@ -47,8 +47,8 @@ export function useCreateChatRoom() {
 }
 
 export const updateSharedChatUserQL = gql`
-    mutation UpdateSharedChatUser($chatRoomId: UUID!) {
-        updateSharedChatUser(chatRoomId: $chatRoomId) {
+    mutation UpdateSharedChatUser($chatRoomId: UUID!, $isClose: Boolean! = false) {
+        updateSharedChatUser(chatRoomId: $chatRoomId, isClose: $isClose) {
             ...chatRoomColumns
         }
     }

@@ -359,6 +359,7 @@ export type MutationDeleteChatUserMeArgs = {
 
 export type MutationUpdateSharedChatUserArgs = {
   chatRoomId: Scalars['UUID']['input'];
+  isClose?: Scalars['Boolean']['input'];
 };
 
 export type Query = {

@@ -9,11 +9,12 @@ import {
 import {Account, ChatUser, Query} from "@/graphql/types.ts";
 import {useConnMapStore} from "@/hooks/webrtc/useConnMapStore.ts";
 import {useStompStore} from "@/hooks/websocket/useStompStore.ts";
-import {useState} from "react";
+import {useEffect} from "react";
 import {useMediaStreamStore} from "@/hooks/webrtc/useMediaStreamStore.ts";
 import {RtcConnection} from "@/hooks/webrtc/RtcConnection.ts";
 import {useApolloClient} from "@apollo/client";
 import {chatUserByIdQL} from "@/client/chatUser.ts";
+import {StompClient} from "@/hooks/websocket/StompClient.ts";
 
 function findChatUserMe(myInfo: Account, chatUsers: ChatUser[]): ChatUser {
   const chatUser = chatUsers.find(it => it.account.id === myInfo.id);
@@ -30,12 +31,17 @@ export function useRtcConnections(
   chatUsers: ChatUser[],
 ) {
 
-  const [isConnected, setIsConnected] = useState(false);
-  const {connMap, addConn, restore} = useConnMapStore();
+  const {connMap, addConn, restoreConnMap} = useConnMapStore();
   const apolloClient = useApolloClient();
-  const {stompClient} = useStompStore();
+  const {stompClient, isConnected, closeStompClient, initStompClient} = useStompStore();
   const {localStream} = useMediaStreamStore();
   const myChatUser = findChatUserMe(myInfo, chatUsers);
+
+  useEffect(() => {
+    if (stompClient && isConnected && stompClient.isRestored()) {
+      initRtc(stompClient);
+    }
+  }, [stompClient, isConnected]);
 
   const createConn = async (targetId: string) => {
     const remoteStream = new MediaStream();
@@ -151,9 +157,7 @@ export function useRtcConnections(
     console.log(`received candidate: ${candidate.candidate}`);
   }
 
-  const connect = async () => {
-    console.log("start connect");
-
+  const initRtc = async (stompClient: StompClient) => {
     // create RtcConnections
     const targets = chatUsers
       .filter(it => it.id !== myChatUser.id);
@@ -164,38 +168,35 @@ export function useRtcConnections(
       conns.push(conn);
     }
 
-    // create stomp client
-    const stomp = await stompClient.init();
-    stompClient.activate();
+    // subscribe
+    stompClient.subscribe(`/sub/signal/offer/${chatRoomId}`, subOffer);
+    stompClient.subscribe(`/sub/signal/answer/${chatRoomId}`, subAnswer);
+    stompClient.subscribe(`/sub/signal/candidate/${chatRoomId}`, subCandidate);
 
-    stomp.onConnect = async () => {
-      setIsConnected(true);
+    // request offer
+    for (const conn of conns) {
+      const pc = conn.pc;
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(new RTCSessionDescription(offer));
 
-      // subscribe
-      stompClient.subscribe(`/sub/signal/offer/${chatRoomId}`, subOffer);
-      stompClient.subscribe(`/sub/signal/answer/${chatRoomId}`, subAnswer);
-      stompClient.subscribe(`/sub/signal/candidate/${chatRoomId}`, subCandidate);
-
-      // request offer
-      for (const conn of conns) {
-        const pc = conn.pc;
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(new RTCSessionDescription(offer));
-
-        await requestOffer(chatRoomId, {
-          description: offer,
-          senderId: myChatUser.id,
-          receiverId: conn.target.id,
-        });
-      }
+      await requestOffer(chatRoomId, {
+        description: offer,
+        senderId: myChatUser.id,
+        receiverId: conn.target.id,
+      });
     }
   }
 
-  const disconnect = async () => {
-    console.log("start disconnect")
-    restore();
-    await stompClient.close();
+  const connect = async () => {
+    console.log("start connect");
+    initStompClient();
   }
 
-  return {connect, disconnect, isConnected};
+  const disconnect = () => {
+    console.log("start disconnect");
+    restoreConnMap();
+    closeStompClient();
+  }
+
+  return {connect, disconnect};
 }
