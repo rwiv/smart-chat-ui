@@ -13,6 +13,20 @@ export const chatUserColumns = gql`
     }
 `;
 
+
+export const chatUserByIdQL = gql`
+    query ChatUserById($id: UUID!) {
+        chatUser(id: $id) {
+            ...chatUserColumns
+            account {
+                ...accountColumns
+            }
+        }
+    }
+    ${chatUserColumns}
+    ${accountColumns}
+`;
+
 export function chatRoomAndUsersByIdQL(id: string) {
     return gql`
         query ChatRoomAndUsersById {
@@ -69,21 +83,6 @@ const createChatUserQL = gql`
 export function useCreateChatUser() {
   const [createChatUser, {loading, error}] = useMutation<Mutation>(createChatUserQL);
   return {createChatUser, loading, error};
-}
-
-
-const createChatUserFromParticipantQL = gql`
-    mutation CreateChatUserFromParticipant($chatRoomId: UUID!, $accountId: UUID!) {
-        createChatUserFromParticipant(chatRoomId: $chatRoomId, accountId: $accountId) {
-            ...chatUserColumns
-        }
-    }
-    ${chatUserColumns}
-`;
-
-export function useCreateChatUserFromParticipant() {
-    const [createChatUserFromParticipant, {loading, error}] = useMutation<Mutation>(createChatUserFromParticipantQL);
-    return {createChatUserFromParticipant, loading, error};
 }
 
 const deleteChatUserMeQL = gql`

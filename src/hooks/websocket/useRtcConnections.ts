@@ -6,12 +6,23 @@ import {
   requestCandidate,
   requestOffer
 } from "@/client/signaling.ts";
-import {Account, ChatUser} from "@/graphql/types.ts";
+import {Account, ChatUser, Query} from "@/graphql/types.ts";
 import {useConnMapStore} from "@/hooks/webrtc/useConnMapStore.ts";
 import {useStompStore} from "@/hooks/websocket/useStompStore.ts";
 import {useState} from "react";
 import {useMediaStreamStore} from "@/hooks/webrtc/useMediaStreamStore.ts";
 import {RtcConnection} from "@/hooks/webrtc/RtcConnection.ts";
+import {useApolloClient} from "@apollo/client";
+import {chatUserByIdQL} from "@/client/chatUser.ts";
+
+function findChatUserMe(myInfo: Account, chatUsers: ChatUser[]): ChatUser {
+  const chatUser = chatUsers.find(it => it.account.id === myInfo.id);
+  if (!chatUser) {
+    throw Error("chatUser is not found");
+  }
+  return chatUser;
+}
+
 
 export function useRtcConnections(
   chatRoomId: string,
@@ -21,10 +32,12 @@ export function useRtcConnections(
 
   const [isConnected, setIsConnected] = useState(false);
   const {connMap, addConn, restore} = useConnMapStore();
+  const apolloClient = useApolloClient();
   const {stompClient} = useStompStore();
   const {localStream} = useMediaStreamStore();
+  const myChatUser = findChatUserMe(myInfo, chatUsers);
 
-  const createConn = (targetId: string) => {
+  const createConn = async (targetId: string) => {
     const remoteStream = new MediaStream();
     const pc = new RTCPeerConnection({
       iceServers: [ { urls: "stun:stun.l.google.com:19302" } ],
@@ -37,7 +50,7 @@ export function useRtcConnections(
       console.log(`send candidate: ${ev.candidate.candidate}`);
       await requestCandidate(chatRoomId, {
         candidate: ev.candidate,
-        senderId: myInfo.id,
+        senderId: myChatUser.id,
         receiverId: targetId,
       });
     }
@@ -62,20 +75,29 @@ export function useRtcConnections(
     const audioSender = pc.addTrack(audioTracks[0], localStream);
     const videoSender = pc.addTrack(videoTracks[0], localStream);
 
-    const conn = new RtcConnection(pc, targetId, audioSender, videoSender, remoteStream);
+    const res = await apolloClient.query<Query>({
+      query: chatUserByIdQL, variables: { id: targetId }, fetchPolicy: "no-cache",
+    });
+
+    const target = res.data.chatUser;
+    if (!target) {
+      throw new Error("chatUser is not found");
+    }
+
+    const conn = new RtcConnection(pc, target, audioSender, videoSender, remoteStream);
     addConn(conn);
     return conn;
   }
 
   const subOffer = async (msg: IMessage) => {
     const {description: offer, senderId, receiverId} = JSON.parse(msg.body) as DescriptionMessage;
-    if (myInfo.id !== receiverId) {
+    if (myChatUser.id !== receiverId) {
       return;
     }
 
     let conn = connMap.get(senderId);
     if (conn === undefined) {
-      conn = createConn(senderId);
+      conn = await createConn(senderId);
     }
     const pc = conn!.pc;
 
@@ -85,7 +107,7 @@ export function useRtcConnections(
 
     await requestAnswer(chatRoomId, {
       description: answer,
-      senderId: myInfo.id,
+      senderId: myChatUser.id,
       receiverId: senderId,
     });
 
@@ -94,7 +116,7 @@ export function useRtcConnections(
 
   const subAnswer = async (msg: IMessage) => {
     const {description: answer, senderId, receiverId} = JSON.parse(msg.body) as DescriptionMessage;
-    if (myInfo?.id !== receiverId) {
+    if (myChatUser?.id !== receiverId) {
       return;
     }
 
@@ -111,7 +133,7 @@ export function useRtcConnections(
   const subCandidate = async (msg: IMessage) => {
     console.log("subCandidate");
     const {candidate, senderId, receiverId} = JSON.parse(msg.body) as CandidateMessage;
-    if (myInfo.id !== receiverId) {
+    if (myChatUser.id !== receiverId) {
       return;
     }
 
@@ -134,12 +156,11 @@ export function useRtcConnections(
 
     // create RtcConnections
     const targets = chatUsers
-      .map(it => it.account)
-      .filter(it => it.id !== myInfo.id);
+      .filter(it => it.id !== myChatUser.id);
 
     const conns: RtcConnection[] = [];
     for (const target of targets) {
-      const conn = createConn(target.id);
+      const conn = await createConn(target.id);
       conns.push(conn);
     }
 
@@ -163,8 +184,8 @@ export function useRtcConnections(
 
         await requestOffer(chatRoomId, {
           description: offer,
-          senderId: myInfo.id,
-          receiverId: conn.targetId,
+          senderId: myChatUser.id,
+          receiverId: conn.target.id,
         });
       }
     }

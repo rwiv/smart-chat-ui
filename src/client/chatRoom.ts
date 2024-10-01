@@ -11,6 +11,7 @@ export const chatRoomColumns = gql`
         createdById
         createdAt
         userCnt
+        sharedChatUserId
     }
 `;
 
@@ -44,6 +45,15 @@ export function useCreateChatRoom() {
   const [createChatRoom, {loading, error}] = useMutation<Mutation>(createChatRoomQL);
   return {createChatRoom, loading, error};
 }
+
+export const updateSharedChatUserQL = gql`
+    mutation UpdateSharedChatUser($chatRoomId: UUID!) {
+        updateSharedChatUser(chatRoomId: $chatRoomId) {
+            ...chatRoomColumns
+        }
+    }
+    ${chatRoomColumns}
+`;
 
 const deleteChatRoomQL = gql`
     mutation DeleteChatRoom($chatRoomId: UUID!) {

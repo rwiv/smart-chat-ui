@@ -25,7 +25,6 @@ export function ChatSidebar({ chatRoomId }: ChatUserSidebarProps) {
       <div css={headerStyle}>
         <HStack>
           <label css={nameStyle}>채팅</label>
-          <div>{chatRoomId}</div>
           <div css={rightAlignStyle}>
             {/*<InviteChatUserButton chatUsers={chatUsers} />*/}
           </div>

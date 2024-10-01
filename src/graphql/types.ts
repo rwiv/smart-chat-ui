@@ -61,6 +61,7 @@ export type ChatRoom = {
   createdById: Scalars['UUID']['output'];
   hasPassword: Scalars['Boolean']['output'];
   id: Scalars['UUID']['output'];
+  sharedChatUserId?: Maybe<Scalars['UUID']['output']>;
   title: Scalars['String']['output'];
   userCnt: Scalars['Int']['output'];
 };
@@ -326,6 +327,7 @@ export type Mutation = {
   createChatUser: ChatUser;
   deleteChatRoom: ChatRoom;
   deleteChatUserMe: ChatUser;
+  updateSharedChatUser: ChatRoom;
 };
 
 
@@ -354,6 +356,11 @@ export type MutationDeleteChatUserMeArgs = {
   chatRoomId: Scalars['UUID']['input'];
 };
 
+
+export type MutationUpdateSharedChatUserArgs = {
+  chatRoomId: Scalars['UUID']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   _service: _Service;
@@ -366,6 +373,7 @@ export type Query = {
   chatRoom?: Maybe<ChatRoom>;
   chatRooms?: Maybe<Array<ChatRoom>>;
   chatRoomsAll?: Maybe<Array<ChatRoom>>;
+  chatUser?: Maybe<ChatUser>;
   chatUsersAll?: Maybe<Array<ChatUser>>;
 };
 
@@ -401,6 +409,11 @@ export type QueryChatRoomArgs = {
 export type QueryChatRoomsArgs = {
   page: Scalars['Int']['input'];
   size: Scalars['Int']['input'];
+};
+
+
+export type QueryChatUserArgs = {
+  id: Scalars['UUID']['input'];
 };
 
 export type _Service = {

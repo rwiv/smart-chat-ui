@@ -1,37 +1,37 @@
 import {useEffect, useRef} from "react";
+import {Account} from "@/graphql/types.ts";
 import {css} from "@emotion/react";
 
+const videoStyle = css`
+  width: 32rem;
+  height: 18rem;
+  object-fit: initial;
+`;
+
 interface RtcVideoProps {
-  remoteStream: MediaStream;
+  mediaStream: MediaStream;
+  account: Account;
 }
 
-const videoStyle = css`
-  width: 640px;
-  height: 360px;
-  object-fit: initial;
-`
-
-export function RemoteRtcVideo({ remoteStream }: RtcVideoProps) {
+export function RtcVideo({ mediaStream, account }: RtcVideoProps) {
 
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     const videoEl = remoteVideoRef.current;
-    if (!videoEl) {
-      return;
-    }
+    if (!videoEl) return;
 
-    videoEl.srcObject = remoteStream;
+    videoEl.srcObject = mediaStream;
   }, [remoteVideoRef]);
 
   return (
     <div>
-      <div>asd</div>
       <video
         ref={remoteVideoRef}
-        autoPlay
         css={videoStyle}
+        autoPlay
       />
+      <div>{account.nickname}</div>
     </div>
   );
 }

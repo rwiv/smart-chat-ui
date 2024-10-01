@@ -8,6 +8,7 @@ type Query {
     chatRooms(page: Int!, size: Int!): [ChatRoom!]
 
     chatUsersAll: [ChatUser!]
+    chatUser(id: UUID!): ChatUser
 
     chatMessage(id: UUID!): ChatMessage
     chatMessages(chatRoomId: UUID!, page: Int!, size: Int!, offset: Int!): [ChatMessage!]

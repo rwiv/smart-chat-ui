@@ -8,7 +8,7 @@ export class ConnMap {
   }
 
   add(conn: RtcConnection) {
-    const targetId = conn.targetId;
+    const targetId = conn.target.id;
     const dup = this.get(targetId);
     if (dup !== undefined) {
       console.log("duplicated");
