@@ -1,13 +1,8 @@
-import {ChatUserSidebarList} from "@/components/chatuser/ChatUserSidebarList.tsx";
 import {css} from "@emotion/react";
-import {ChatUser} from "@/graphql/types.ts";
 import {HStack} from "@/lib/style/layouts.tsx";
 import {rightAlignStyle} from "@/styles/globalStyles.ts";
-import {useMyInfo} from "@/hooks/common/useMyInfo.ts";
 
 const headerStyle = css`
-  border-bottom: 2px solid #e2e2e2;
-  //padding-top: 15px;
 `;
 
 const nameStyle = css`
@@ -20,26 +15,25 @@ const nameStyle = css`
 `;
 
 interface ChatUserSidebarProps {
-  chatUsers: ChatUser[];
+  chatRoomId: string
 }
 
-export function ChatUserSidebar({ chatUsers }: ChatUserSidebarProps) {
-
-  const {myInfo} = useMyInfo();
+export function ChatSidebar({ chatRoomId }: ChatUserSidebarProps) {
 
   return (
     <div>
       <div css={headerStyle}>
         <HStack>
-          <label css={nameStyle}>유저</label>
+          <label css={nameStyle}>채팅</label>
+          <div>{chatRoomId}</div>
           <div css={rightAlignStyle}>
             {/*<InviteChatUserButton chatUsers={chatUsers} />*/}
           </div>
         </HStack>
       </div>
-      {myInfo && (
-        <ChatUserSidebarList chatUsers={chatUsers} myInfo={myInfo} />
-      )}
+      {/*{myInfo && (*/}
+      {/*  <ChatUserSidebarList chatUsers={chatUsers} myInfo={myInfo} />*/}
+      {/*)}*/}
     </div>
   )
 }

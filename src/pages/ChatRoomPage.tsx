@@ -4,9 +4,10 @@ import {mq} from "@/lib/style/mediaQueries.ts";
 import {LeftSidebar} from "@/components/layouts/LeftSidebar.tsx";
 import {containerStyle, flexStyle} from "@/styles/globalStyles.ts";
 import {useCurChatRoomStore} from "@/hooks/chatroom/useCurChatRoomStore.ts";
+import {ChatRoomContent} from "@/components/layouts/ChatRoomContent.tsx";
 
-const left = mq.m_all(2,2,3,3,3,3);
-const right = mq.m_all(10,10,9, 9,9,9);
+const left = mq.m_all(2,2,2,2,2,2);
+const right = mq.m_all(10,10,10, 10, 10,10);
 
 export function ChatRoomPage() {
 
@@ -21,11 +22,7 @@ export function ChatRoomPage() {
     if (chatRoomId === undefined) {
       return null;
     }
-    const idNum = parseInt(chatRoomId);
-    if (isNaN(idNum)) {
-      return null;
-    }
-    return idNum;
+    return chatRoomId;
   }
 
   useEffect(() => {
@@ -39,10 +36,9 @@ export function ChatRoomPage() {
         <LeftSidebar/>
       </div>
       <div css={[right, flexStyle, {background: "#ffffff"}]}>
-        {/*{chatRoomId !== null && (*/}
-        {/*  <ChatRoomContent chatRoomId={chatRoomId}/>*/}
-        {/*)}*/}
-        {chatRoomId}
+        {chatRoomId !== null && (
+          <ChatRoomContent chatRoomId={chatRoomId}/>
+        )}
       </div>
     </div>
   )

@@ -6,8 +6,8 @@ import {useCurChatRoomStore} from "@/hooks/chatroom/useCurChatRoomStore.ts";
 import {useSidebarStateStore} from "@/hooks/common/useSidebarStateStore.ts";
 import {useParams} from "react-router";
 
-const left = mq.m_all(2,2,3,3,3,3);
-const right = mq.m_all(10,10,9, 9,9,9);
+const left = mq.m_all(2,2,2,2,2,2);
+const right = mq.m_all(10,10,10, 10, 10,10);
 
 export function IndexPage() {
 

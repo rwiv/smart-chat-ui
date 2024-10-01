@@ -4,8 +4,8 @@ import {ChatRoom} from "@/graphql/types.ts";
 interface GlobalState {
   curChatRoom: ChatRoom | null;
   setCurChatRoom: (chatRoom: ChatRoom | null) => void;
-  curChatRoomId: number | null;
-  setCurChatRoomId: (chatRoomId: number | null) => void;
+  curChatRoomId: string | null;
+  setCurChatRoomId: (chatRoomId: string | null) => void;
 }
 
 export const useCurChatRoomStore = create<GlobalState>((set) => ({

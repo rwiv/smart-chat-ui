@@ -1,32 +1,35 @@
 import {IMessage} from "@stomp/stompjs";
-import {CandidateMessage, DescriptionMessage, requestAnswer, requestCandidate, requestOffer} from "@/client/signaling.ts";
-import {createStompClient} from "@/lib/web/stomp.ts";
-import {RtcConnection, useConnMapStore} from "@/hooks/test/useConnectionStore.ts";
-import {useStreamStompStore} from "@/hooks/test/StreamStompStore.ts";
+import {
+  CandidateMessage,
+  DescriptionMessage,
+  requestAnswer,
+  requestCandidate,
+  requestOffer
+} from "@/client/signaling.ts";
+import {Account, ChatUser} from "@/graphql/types.ts";
+import {useConnMapStore} from "@/hooks/webrtc/useConnMapStore.ts";
+import {useStompStore} from "@/hooks/websocket/useStompStore.ts";
+import {useState} from "react";
+import {useMediaStreamStore} from "@/hooks/webrtc/useMediaStreamStore.ts";
+import {RtcConnection} from "@/hooks/webrtc/RtcConnection.ts";
 
-export interface Account {
-  id: number;
-}
-
-export interface ChatUser {
-  account: Account;
-}
-
-export function useChatMessagesRTC(
-  chatRoomId: number,
+export function useRtcConnections(
+  chatRoomId: string,
   myInfo: Account,
   chatUsers: ChatUser[],
-  localStream: MediaStream,
-  remoteStream: MediaStream,
 ) {
 
+  const [isConnected, setIsConnected] = useState(false);
   const {connMap, addConn, restore} = useConnMapStore();
-  const {setNewStompClient} = useStreamStompStore();
+  const {stompClient} = useStompStore();
+  const {localStream} = useMediaStreamStore();
 
-  const createConn = (targetId: number) => {
+  const createConn = (targetId: string) => {
+    const remoteStream = new MediaStream();
     const pc = new RTCPeerConnection({
       iceServers: [ { urls: "stun:stun.l.google.com:19302" } ],
     });
+
     pc.onicecandidate = async ev => {
       console.log("onicecandidate");
       if (ev.candidate === undefined || ev.candidate === null) return;
@@ -45,6 +48,10 @@ export function useChatMessagesRTC(
       remoteStream.addTrack(ev.track);
     }
 
+    if (localStream === undefined) {
+      throw Error("localStream is undefined");
+    }
+
     // send local stream
     const videoTracks = localStream.getVideoTracks();
     const audioTracks = localStream.getAudioTracks();
@@ -58,17 +65,6 @@ export function useChatMessagesRTC(
     const conn = new RtcConnection(pc, targetId, audioSender, videoSender, remoteStream);
     addConn(conn);
     return conn;
-  }
-
-  const reqOffer = async (pc: RTCPeerConnection, target: Account) => {
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(new RTCSessionDescription(offer));
-
-    await requestOffer(chatRoomId, {
-      description: offer,
-      senderId: myInfo.id,
-      receiverId: target.id,
-    });
   }
 
   const subOffer = async (msg: IMessage) => {
@@ -133,29 +129,52 @@ export function useChatMessagesRTC(
     console.log(`received candidate: ${candidate.candidate}`);
   }
 
-  const connect = () => {
-    const stomp = createStompClient();
-    stomp.onConnect  = async () => {
-      const offerSub = stomp.subscribe(`/sub/signal/offer/${chatRoomId}`, subOffer);
-      const answerSub = stomp.subscribe(`/sub/signal/answer/${chatRoomId}`, subAnswer);
-      const candidateSub = stomp.subscribe(`/sub/signal/candidate/${chatRoomId}`, subCandidate);
-      setNewStompClient(stomp, [offerSub, answerSub, candidateSub]);
+  const connect = async () => {
+    console.log("start connect");
 
-      // set rtc connections
-      const targets = chatUsers.map(it => it.account).filter(it => it.id !== myInfo.id)
-      for (const target of targets) {
-        const conn = createConn(target.id);
-        await reqOffer(conn.pc, target);
+    // create RtcConnections
+    const targets = chatUsers
+      .map(it => it.account)
+      .filter(it => it.id !== myInfo.id);
+
+    const conns: RtcConnection[] = [];
+    for (const target of targets) {
+      const conn = createConn(target.id);
+      conns.push(conn);
+    }
+
+    // create stomp client
+    const stomp = await stompClient.init();
+    stompClient.activate();
+
+    stomp.onConnect = async () => {
+      setIsConnected(true);
+
+      // subscribe
+      stompClient.subscribe(`/sub/signal/offer/${chatRoomId}`, subOffer);
+      stompClient.subscribe(`/sub/signal/answer/${chatRoomId}`, subAnswer);
+      stompClient.subscribe(`/sub/signal/candidate/${chatRoomId}`, subCandidate);
+
+      // request offer
+      for (const conn of conns) {
+        const pc = conn.pc;
+        const offer = await pc.createOffer();
+        await pc.setLocalDescription(new RTCSessionDescription(offer));
+
+        await requestOffer(chatRoomId, {
+          description: offer,
+          senderId: myInfo.id,
+          receiverId: conn.targetId,
+        });
       }
     }
-    stomp.activate();
   }
 
-  const disconnect = () => {
+  const disconnect = async () => {
     console.log("start disconnect")
     restore();
-    setNewStompClient(undefined, []);
+    await stompClient.close();
   }
 
-  return {connect, disconnect};
+  return {connect, disconnect, isConnected};
 }

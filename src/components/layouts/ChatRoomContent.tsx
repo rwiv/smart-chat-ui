@@ -1,15 +1,14 @@
-import {ChatUserSidebar} from "@/components/chatuser/ChatUserSidebar.tsx";
-import {ChatMessagesContent} from "@/components/chatmessage/ChatMessagesContent.tsx";
+import {ChatSidebar} from "@/components/chatuser/ChatSidebar.tsx";
 import {css} from "@emotion/react";
-import {ChatRoomContentHeader} from "@/components/layouts/ChatRoomContentHeader.tsx";
 import {mq} from "@/lib/style/mediaQueries.ts";
 import {useMyInfo} from "@/hooks/common/useMyInfo.ts";
 import {useChatRoomAndUsers} from "@/client/chatUser.ts";
+import {RtcMediaContent} from "@/components/webrtc/RtcMediaContent.tsx";
 
 const mainContentStyle = css`
   display: flex;
   flex-direction: column;
-  border-right: 2px solid #e2e2e2;
+  outline: solid #f0f2f4 0.1rem;
 `;
 
 const sidebarStyle = css`
@@ -18,7 +17,7 @@ const sidebarStyle = css`
 `;
 
 interface ChatRoomContentProps {
-  chatRoomId: number;
+  chatRoomId: string;
 }
 
 const left = mq.m_all(12,8,8, 9,9,9);
@@ -33,14 +32,17 @@ export function ChatRoomContent({ chatRoomId }: ChatRoomContentProps) {
   return (
     <>
       <div css={[left, mainContentStyle]}>
-        <ChatRoomContentHeader />
+        {/*<ChatRoomContentHeader />*/}
+        {/*{myInfo !== undefined && chatUsers !== undefined && (*/}
+        {/*  <ChatMessagesContent chatRoomId={chatRoomId} myInfo={myInfo} chatUsers={chatUsers} />)*/}
+        {/*}*/}
         {myInfo !== undefined && chatUsers !== undefined && (
-          <ChatMessagesContent chatRoomId={chatRoomId} myInfo={myInfo} chatUsers={chatUsers} />)
+          <RtcMediaContent chatRoomId={chatRoomId} myInfo={myInfo} chatUsers={chatUsers} />)
         }
       </div>
       <div css={[right, sidebarStyle]}>
         {chatUsers !== undefined &&
-          (<ChatUserSidebar chatUsers={chatUsers} />)
+          (<ChatSidebar chatRoomId={chatRoomId} />)
         }
       </div>
     </>
