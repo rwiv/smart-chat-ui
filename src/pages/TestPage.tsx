@@ -1,7 +1,9 @@
+import {SketchCanvas} from "@/components/canvas/SketchCanvas.tsx";
+
 export function TestPage() {
   return (
     <div>
-      hello
+      <SketchCanvas />
     </div>
   )
 }
