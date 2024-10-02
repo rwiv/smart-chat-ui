@@ -9,8 +9,8 @@ const defaultVideoStyle = css`
 `;
 
 const sharedMainVideoStyle = css`
-  width: 48rem;
-  height: 27rem;
+  width: 64rem;
+  height: 36rem;
   object-fit: initial;
 `;
 
