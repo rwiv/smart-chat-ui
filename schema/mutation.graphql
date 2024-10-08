@@ -7,4 +7,6 @@ type Mutation {
 
     createChatUser(chatRoomId: UUID!, password: String = null): ChatUser!
     deleteChatUserMe(chatRoomId: UUID!): ChatUser!
+
+    createChatMessage(req: ChatMessageAdd!): ChatMessage!
 }

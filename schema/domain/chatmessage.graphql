@@ -1,0 +1,15 @@
+type ChatMessage {
+    id: UUID!
+    content: String!
+    createdById: UUID!
+    createdBy: Account
+    createdAt: DateTime!
+    chatRoomId: UUID!
+    chatRoom: ChatRoom
+    num: Int!
+}
+
+input ChatMessageAdd {
+    content: String!
+    chatRoomId: UUID!
+}

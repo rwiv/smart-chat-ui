@@ -1,21 +1,15 @@
 import {gql} from "@apollo/client";
-import {consts} from "@/configures/consts.ts";
 import {accountColumns} from "@/client/account.ts";
-import {post} from "@/lib/web/http.ts";
 
 export const defaultChatMessageSize: number = 10;
 
 export const chatMessageColumns = gql`
     fragment chatMessageColumns on ChatMessage {
         id
-        chatRoom {
-            id
-        }
-        createdBy {
-            id
-        }
         content
+        createdById
         createdAt
+        chatRoomId
         num
     }
 `;
@@ -46,6 +40,16 @@ export const chatMessageQL = gql`
     ${accountColumns}
 `;
 
-export async function sendMessage(chatRoomId: number, content: string) {
-  return await post(`${consts.endpoint}/api/chat-messages/${chatRoomId}`, { content });
-}
+
+export const createChatMessageQL = gql`
+    mutation CreateChatMessage($req: ChatMessageAdd!) {
+        createChatMessage(req: $req) {
+            ...chatMessageColumns
+            createdBy {
+                ...accountColumns
+            }
+        }
+    }
+    ${accountColumns}
+    ${chatMessageColumns}
+`;

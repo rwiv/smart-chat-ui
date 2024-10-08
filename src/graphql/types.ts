@@ -44,12 +44,19 @@ export enum AccountRole {
 
 export type ChatMessage = {
   __typename?: 'ChatMessage';
-  chatRoom: ChatRoom;
+  chatRoom?: Maybe<ChatRoom>;
+  chatRoomId: Scalars['UUID']['output'];
   content: Scalars['String']['output'];
   createdAt: Scalars['DateTime']['output'];
-  createdBy: Account;
+  createdBy?: Maybe<Account>;
+  createdById: Scalars['UUID']['output'];
   id: Scalars['UUID']['output'];
   num: Scalars['Int']['output'];
+};
+
+export type ChatMessageAdd = {
+  chatRoomId: Scalars['UUID']['input'];
+  content: Scalars['String']['input'];
 };
 
 export type ChatRoom = {
@@ -323,6 +330,7 @@ export enum ErrorType {
 export type Mutation = {
   __typename?: 'Mutation';
   createAccount: Account;
+  createChatMessage: ChatMessage;
   createChatRoom: ChatRoom;
   createChatUser: ChatUser;
   deleteChatRoom: ChatRoom;
@@ -333,6 +341,11 @@ export type Mutation = {
 
 export type MutationCreateAccountArgs = {
   creation: AccountAdd;
+};
+
+
+export type MutationCreateChatMessageArgs = {
+  req: ChatMessageAdd;
 };
 
 

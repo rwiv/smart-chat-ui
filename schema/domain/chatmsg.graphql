@@ -1,8 +1,0 @@
-type ChatMessage {
-    id: UUID!
-    chatRoom: ChatRoom!
-    createdBy: Account!
-    content: String!
-    createdAt: DateTime!
-    num: Int!
-}

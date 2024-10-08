@@ -12,7 +12,7 @@ export type ScrollType = "BOTTOM" | "TOP";
 const initPage = 1;
 const initOffset = 0;
 
-export function useChatMessagesScroll(chatRoomId: number) {
+export function useChatMessagesScroll(chatRoomId: string) {
 
   const apolloClient = useApolloClient();
 

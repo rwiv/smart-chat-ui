@@ -1,4 +1,4 @@
-import {ChatSidebar} from "@/components/chatuser/ChatSidebar.tsx";
+import {ChatSidebar} from "@/components/layouts/ChatSidebar.tsx";
 import {css} from "@emotion/react";
 import {mq} from "@/lib/style/mediaQueries.ts";
 import {useMyInfo} from "@/hooks/common/useMyInfo.ts";
@@ -35,26 +35,24 @@ export function ChatRoomContent({ chatRoomId }: ChatRoomContentProps) {
   const chatRoom = usersData?.chatRoom ?? undefined;
   const chatUsers = usersData?.chatRoom?.chatUsers ?? undefined;
 
-  return (
-    <div css={mainContentStyle2}>
-      {myInfo && chatRoom && chatUsers && (
-        <RtcMediaContent chatRoom={chatRoom} myInfo={myInfo} chatUsers={chatUsers} />)
-      }
-    </div>
-  )
-
   // return (
-  //   <>
-  //     <div css={[left, mainContentStyle]}>
-  //       {myInfo && chatRoom && chatUsers && (
-  //         <RtcMediaContent chatRoom={chatRoom} myInfo={myInfo} chatUsers={chatUsers} />)
-  //       }
-  //     </div>
-  //     <div css={[right, sidebarStyle]}>
-  //       {chatUsers !== undefined &&
-  //         (<ChatSidebar chatRoomId={chatRoomId} />)
-  //       }
-  //     </div>
-  //   </>
+  //   <div css={mainContentStyle2}>
+  //     {myInfo && chatRoom && chatUsers && (
+  //       <RtcMediaContent chatRoom={chatRoom} myInfo={myInfo} chatUsers={chatUsers} />)
+  //     }
+  //   </div>
   // )
+
+  return (
+    <>
+      <div css={[left, mainContentStyle]}>
+        {myInfo && chatRoom && chatUsers && (
+          <RtcMediaContent chatRoom={chatRoom} myInfo={myInfo} chatUsers={chatUsers} />)
+        }
+      </div>
+      <div css={[right, sidebarStyle]}>
+        <ChatSidebar chatRoomId={chatRoomId} />
+      </div>
+    </>
+  )
 }
