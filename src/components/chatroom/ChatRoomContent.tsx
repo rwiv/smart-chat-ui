@@ -19,8 +19,8 @@ interface ChatRoomContentProps {
   chatRoomId: string;
 }
 
-const left = mq.m_all(12,8,8, 9,9,9);
-const right = mq.m_all(0,4,4,3,3,3);
+const left = mq.m_all(12,8,8, 8,8,9);
+const right = mq.m_all(0,4,4,4,4,3);
 
 export function ChatRoomContent({ chatRoomId }: ChatRoomContentProps) {
 

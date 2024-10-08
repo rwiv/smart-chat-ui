@@ -11,7 +11,7 @@ const frameStyle = css`
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: #222831;
+    background: #5a6068;
     border-radius: 10px;
   }
   ::-webkit-scrollbar-thumb:hover {

@@ -34,9 +34,11 @@ export function ChatMessageInput({ chatRoomId }: ChatMessageInputProps) {
     <Input
       css={css`
         border: solid #f0f2f4 0.1rem;
-        border-radius: 20px;
-        font-size: 1.1rem;
-        height: 3rem;
+        border-radius: 15px;
+        font-weight: 400;
+        font-size: 0.9rem;
+        opacity: 0.8;
+        height: 2.5rem;
       `}
       type="message"
       value={input}

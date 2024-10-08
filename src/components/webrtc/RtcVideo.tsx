@@ -3,8 +3,8 @@ import {Account} from "@/graphql/types.ts";
 import {css} from "@emotion/react";
 
 const defaultVideoStyle = css`
-  width: 32rem;
-  height: 18rem;
+  width: 22.4rem;
+  height: 12.6rem;
   object-fit: initial;
 `;
 

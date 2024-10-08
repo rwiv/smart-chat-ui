@@ -31,7 +31,7 @@ export function ChattingWindow({ chatRoomId }: ChatMessagesContentProps) {
         />
       </div>
       <div css={css`
-          margin: 2rem;
+          margin: 2rem 1rem;
         `}>
         <ChatMessageInput
           chatRoomId={chatRoomId}

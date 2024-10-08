@@ -42,7 +42,7 @@ export function ChatMessageCard({ chatMessage }: ChatMessageProps) {
           {createdBy && (
             <span css={css`
               font-weight: 400;
-              font-size: 0.9rem;
+              font-size: 0.8rem;
               opacity: 0.5;
             `}>
             {createdBy.nickname}
@@ -50,7 +50,9 @@ export function ChatMessageCard({ chatMessage }: ChatMessageProps) {
           )}
         </div>
         <div css={css`
-          font-size: 1.0rem;
+          font-weight: 400;
+          font-size: 0.9rem;
+          opacity: 0.8;
         `}>
           {chatMessage.content}
         </div>
