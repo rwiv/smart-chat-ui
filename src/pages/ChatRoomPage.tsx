@@ -4,7 +4,7 @@ import {mq} from "@/lib/style/mediaQueries.ts";
 import {LeftSidebar} from "@/components/layouts/LeftSidebar.tsx";
 import {containerStyle, flexStyle} from "@/styles/globalStyles.ts";
 import {useCurChatRoomStore} from "@/hooks/chatroom/useCurChatRoomStore.ts";
-import {ChatRoomContent} from "@/components/layouts/ChatRoomContent.tsx";
+import {ChatRoomContent} from "@/components/chatroom/ChatRoomContent.tsx";
 
 const left = mq.m_all(2,2,2,2,2,2);
 const right = mq.m_all(10,10,10, 10, 10,10);

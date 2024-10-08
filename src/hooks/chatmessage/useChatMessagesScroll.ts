@@ -9,15 +9,13 @@ import {useChatMessagesRefreshStore} from "@/hooks/chatmessage/useChatMessagesRe
 
 export type ScrollType = "BOTTOM" | "TOP";
 
-const initPage = 1;
+const initPage = 0;
 const initOffset = 0;
 
 export function useChatMessagesScroll(chatRoomId: string) {
 
   const apolloClient = useApolloClient();
-
   const {refreshFlag} = useChatMessagesRefreshStore();
-
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
 
   const [page, setPage] = useState(initPage);
@@ -31,7 +29,7 @@ export function useChatMessagesScroll(chatRoomId: string) {
   const [scrollHeight, setScrollHeight] = useState(0);
 
   const observerRef = useIntersect(async (entry, observer) => {
-    observer.unobserve(entry.target)
+    observer.unobserve(entry.target);
     if (hasNextPage && !loading) {
       setPage(prev => prev + 1);
       setLoading(true);
@@ -57,7 +55,7 @@ export function useChatMessagesScroll(chatRoomId: string) {
   }, [refreshFlag]);
 
   useEffect(() => {
-    if (page === 1) {
+    if (page === initPage) {
       return;
     }
 

@@ -22,6 +22,7 @@ export function SketchCanvas() {
     const y = e.nativeEvent.offsetY;
 
     const ctx = canvas.getContext("2d");
+    if (!ctx) return;
     if (!drawing) {
       ctx.beginPath();
       ctx.moveTo(x, y);

@@ -1,8 +1,6 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {IMessage} from "@stomp/stompjs";
-import {ChatMessage, Mutation, Query} from "@/graphql/types.ts";
-import {chatMessageQL, createChatMessageQL} from "@/client/chatMessage.ts";
-import {useApolloClient} from "@apollo/client";
+import {ChatMessage} from "@/graphql/types.ts";
 import {ScrollType} from "@/hooks/chatmessage/useChatMessagesScroll.ts";
 import {useStompStore} from "@/hooks/websocket/useStompStore.ts";
 
@@ -13,45 +11,31 @@ export function useChatMessagesStomp(
   setScrollType: React.Dispatch<React.SetStateAction<ScrollType>>,
 ) {
 
-  const apolloClient = useApolloClient();
   const {stompClient, isConnected} = useStompStore();
+  const [existsMsgSub, setExistsMsgSub] = useState(false);
 
   useEffect(() => {
-    if (stompClient && isConnected && stompClient.isRestored()) {
+    console.log(isConnected)
+    if (stompClient && isConnected) {
       stompClient.subscribe(`/sub/chat-rooms/${chatRoomId}/messages`, onMessage);
+      setExistsMsgSub(true);
     }
   }, [stompClient, isConnected]);
 
   async function onMessage(msg: IMessage) {
-    const body = JSON.parse(msg.body) as { id: string, num: number };
-    const res = await apolloClient.query<Query>({
-      query: chatMessageQL, variables: { id: body.id }, fetchPolicy: "network-only",
-    });
-    const chatMessage = res.data.chatMessage;
-    if (chatMessage === undefined || chatMessage === null) return;
+    const chatMessage = JSON.parse(msg.body) as ChatMessage;
+    if (!chatMessage) return;
 
     setChatMessages(prev => {
-      if (prev.find(it => it.id === body.id) !== undefined) {
+      if (prev.find(it => it.id === chatMessage.id)) {
         return prev;
+      } else {
+        return [...prev, chatMessage];
       }
-      return [...prev, chatMessage];
     });
     setOffset(prev => prev + 1);
     setScrollType("BOTTOM");
   }
 
-  const send = async (message: string) => {
-    const res = await apolloClient.query<Mutation>({
-      query: createChatMessageQL,
-      variables: {
-        content: message,
-        chatRoomId: chatRoomId,
-      },
-      fetchPolicy: "no-cache",
-    });
-    const chatMessage = res.data.createChatMessage;
-    setChatMessages(prev => [...prev, chatMessage]);
-  }
-
-  return {send};
+  return {existsMsgSub};
 }

@@ -10,7 +10,7 @@ export function useChatMessages(chatRoomId: string) {
     setOffset, setScrollType
   } = useChatMessagesScroll(chatRoomId);
 
-  const { send } = useChatMessagesStomp(chatRoomId, setChatMessages, setOffset, setScrollType);
+  const {existsMsgSub} = useChatMessagesStomp(chatRoomId, setChatMessages, setOffset, setScrollType);
 
-  return { chatMessages, page, observerRef, scrollRef, loading, send };
+  return { chatMessages, page, observerRef, scrollRef, loading, existsMsgSub };
 }

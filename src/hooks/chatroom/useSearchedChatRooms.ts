@@ -5,10 +5,12 @@ import {chatRoomsQL, defaultChatRoomSize} from "@/client/chatRoom.ts";
 import {useIntersect} from "@/hooks/common/useIntersect.ts";
 import type {QueryOptions} from "@apollo/client/core/watchQueryOptions";
 
+const initPage = 0;
+
 export function useSearchedChatRooms() {
 
   const client = useApolloClient();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(initPage);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [loading, setLoading] = useState(false);
   const [chatRooms, setChatRooms] = useState<ChatRoom[]>([])
@@ -28,7 +30,7 @@ export function useSearchedChatRooms() {
   }, []);
 
   useEffect(() => {
-    if (page === 1) {
+    if (page === initPage) {
       return;
     }
     client.query<Query>(getQueryOptions()).then(result => {

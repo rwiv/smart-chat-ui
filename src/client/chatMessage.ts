@@ -27,20 +27,6 @@ export const chatMessagesQL = gql`
     ${accountColumns}
 `;
 
-export const chatMessageQL = gql`
-    query ChatMessage($id: UUID!) {
-        chatMessage(id: $id) {
-            ...chatMessageColumns
-            createdBy {
-                ...accountColumns
-            }
-        }
-    }
-    ${chatMessageColumns}
-    ${accountColumns}
-`;
-
-
 export const createChatMessageQL = gql`
     mutation CreateChatMessage($req: ChatMessageAdd!) {
         createChatMessage(req: $req) {
