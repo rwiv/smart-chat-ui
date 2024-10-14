@@ -15,7 +15,6 @@ export function useChatMessagesStomp(
   const [existsMsgSub, setExistsMsgSub] = useState(false);
 
   useEffect(() => {
-    console.log(isConnected)
     if (stompClient && isConnected) {
       stompClient.subscribe(`/sub/chat-rooms/${chatRoomId}/messages`, onMessage);
       setExistsMsgSub(true);

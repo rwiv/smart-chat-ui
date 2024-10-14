@@ -33,7 +33,7 @@ export function useRtcConnections(
 
   const {connMap, addConn, restoreConnMap} = useConnMapStore();
   const apolloClient = useApolloClient();
-  const {stompClient, isConnected, closeStompClient, initStompClient} = useStompStore();
+  const {stompClient, isConnected, initStompClient} = useStompStore();
   const {localStream} = useMediaStreamStore();
   const myChatUser = findChatUserMe(myInfo, chatUsers);
 
@@ -195,7 +195,6 @@ export function useRtcConnections(
   const disconnect = () => {
     console.log("start disconnect");
     restoreConnMap();
-    closeStompClient();
   }
 
   return {connect, disconnect};

@@ -24,7 +24,7 @@ export const useStompStore = create<StompGlobalState>((set) => ({
       prev.setIsConnected(true);
     };
     stomp.activate();
-    const stompClient = new StompClient(stomp, []);
+    const stompClient = new StompClient(stomp, new Map());
     return {...prev, stompClient};
   }),
   refreshStompClient: () => set(prev => ({ ...prev })),

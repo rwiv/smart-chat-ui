@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {login, LoginRequest} from "@/client/account.ts";
-import {ChattingWindowTest} from "@/components/chatmessage/ChattingWindowTest.tsx";
+import {SketchCanvasTest} from "@/components/canvas/SketchCanvasTest.tsx";
 
 export function TestPage() {
 
@@ -21,7 +21,7 @@ export function TestPage() {
   return (
     <div>
       {isLogin && (
-        <ChattingWindowTest />
+        <SketchCanvasTest />
       )}
     </div>
   )

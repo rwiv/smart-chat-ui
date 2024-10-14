@@ -1,10 +1,41 @@
-import {css} from "@emotion/react";
-import {MouseEvent, useEffect, useRef, useState} from "react";
+import {MouseEvent, ReactNode, useEffect, useRef, useState} from "react";
+import {useStompStore} from "@/hooks/websocket/useStompStore.ts";
+import {IMessage} from "@stomp/stompjs";
 
-export function SketchCanvas() {
+interface SketchCanvasPros {
+  children: ReactNode;
+  chatRoomId: string;
+  isRemote: boolean;
+  width: string;
+  height: string;
+}
 
+interface CanvasMessage {
+  x: number;
+  y: number;
+  size: number;
+  color: string;
+}
+
+export function SketchCanvas({ children, chatRoomId, isRemote, width, height }: SketchCanvasPros) {
+
+  const {stompClient, isConnected} = useStompStore();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [drawing, setDrawing] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      if (stompClient) {
+        stompClient.unsubscribe(`/sub/chat-rooms/${chatRoomId}/canvas`);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (stompClient && isConnected) {
+      stompClient.subscribe(`/sub/chat-rooms/${chatRoomId}/canvas`, onMessage);
+    }
+  }, [stompClient, isConnected]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -14,86 +45,62 @@ export function SketchCanvas() {
     }
   }, [canvasRef]);
 
-  const onMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const onMessage = (msg: IMessage) => {
+    if (!isRemote) return;
+    const body = JSON.parse(msg.body) as CanvasMessage;
+    draw(body.x, body.y);
+  }
 
+  const onMouseMove = (e: MouseEvent<HTMLCanvasElement>) => {
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
+    if (isRemote) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
     if (!drawing) {
-      ctx.beginPath();
-      ctx.moveTo(x, y);
+      move(x, y);
     } else {
-      ctx.lineTo(x, y);
-      ctx.stroke();
+      draw(x, y);
+      const msg: CanvasMessage = { x, y, size: 1, color: "black" };
+      stompClient?.send(`/pub/chat-rooms/${chatRoomId}/canvas`, msg);
     }
 
     // console.log(`x: ${x}, y: ${y}`);
   }
 
+  const draw = (x: number, y: number) => {
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
+
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
+
+  const move = (x: number, y: number) => {
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+  }
+
   return (
     <div>
-      <div>hello</div>
       {drawing ? (
         <div>drawing o</div>
       ) : (
         <div>drawing x</div>
       )}
 
-      <div css={css`
-        position: relative
-      `}>
-        <img
-          src="https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg"
-          alt="Grapefruit slice atop a pile of other slices"
-          css={css`
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-          `}
-        />
+      <div className="relative">
+        {children}
         <canvas
           ref={canvasRef}
-          css={css`
-            position: absolute;
-            background: black;
-            z-index: 2;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.5;
-          `}
+          className="absolute top-0 left-0 z-20" css={{ width, height }}
           onMouseDown={() => setDrawing(true)}
           onMouseUp={() => setDrawing(false)}
           onMouseMove={onMouseMove}
         />
       </div>
-
-      {/*<div>*/}
-      {/*  <div css={css`*/}
-      {/*    position: relative;*/}
-      {/*  `}>*/}
-      {/*    <div css={css`*/}
-      {/*      background: bisque;*/}
-      {/*      width: 16rem;*/}
-      {/*      height: 9rem;*/}
-      {/*    `}/>*/}
-      {/*    <div css={css`*/}
-      {/*      position: absolute;*/}
-      {/*      bottom: 0;*/}
-      {/*      left: 0;*/}
-      {/*      margin: 0.5rem;*/}
-      {/*      background: black;*/}
-      {/*      width: 1rem;*/}
-      {/*      height: 1rem;*/}
-      {/*    `}/>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
     </div>
   )
 }

@@ -12,6 +12,7 @@ import {useStompStore} from "@/hooks/websocket/useStompStore.ts";
 import {Container} from "@/lib/common/container.ts";
 import {buttonStyle} from "@/styles/buttonStyles.ts";
 import {css} from "@emotion/react";
+import {SketchCanvas} from "@/components/canvas/SketchCanvas.tsx";
 
 interface ChatMessagesContentProps {
   chatRoom: ChatRoom;
@@ -101,6 +102,10 @@ export function RtcMediaContent({ chatRoom, myInfo, chatUsers }: ChatMessagesCon
     console.log(sharedId);
   }
 
+  const isRemote = () => {
+    return !(findSharedUser().account.id === myInfo.id)
+  }
+
   return (
     <VStack css={{margin: "0.5rem 1rem"}}>
       <HStack className="mt-3 mb-3 ml-4 mr-5" css={{justifyContent: "space-between"}}>
@@ -109,7 +114,7 @@ export function RtcMediaContent({ chatRoom, myInfo, chatUsers }: ChatMessagesCon
             font-size: 1.4rem;
           `}>{chatRoom.title}</div>
         <div>
-          {sharedId && findSharedUser().account.id === myInfo.id && (
+          {sharedId && !isRemote() && (
             <Button css={buttonStyle} onClick={onCloseShare}>공유 종료</Button>
           )}
           {sharedId === undefined && (
@@ -130,7 +135,11 @@ export function RtcMediaContent({ chatRoom, myInfo, chatUsers }: ChatMessagesCon
           <div>
             {new Container(findSharedAccountAndStream()).map(([account, mediaStream]) => {
               if (!mediaStream) return null;
-              return (<RtcVideo mediaStream={mediaStream} account={account} type={"SHARED_MAIN"}/>)
+              return (
+                <SketchCanvas chatRoomId={chatRoom.id} isRemote={isRemote()} width="64rem" height="36rem">
+                  <RtcVideo mediaStream={mediaStream} account={account} type={"SHARED_MAIN"}/>
+                </SketchCanvas>
+              )
             })}
           </div>
         </VStack>
