@@ -10,6 +10,7 @@ export const accountColumns = gql`
         username
         nickname
         avatarUrl
+        createdAt
     }
 `;
 
@@ -17,6 +18,17 @@ export const myInfoQL = gql`
     query MyInfo {
         account {
             ...accountColumns
+            chatRooms {
+              id
+              title
+              createdById
+              createdAt
+              userCnt
+              sharedChatUserId
+              createdBy {
+                ...accountColumns
+              }
+            }
         }
     }
     ${accountColumns}

@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table.tsx"
 import {useNavigate} from "react-router";
 import {getDateTimeString} from "@/lib/common/date.ts";
 
@@ -14,12 +14,12 @@ interface ChatRoomTableProps {
   chatRooms: ChatRoom[];
 }
 
-export function ChatRoomTable({ chatRooms }: ChatRoomTableProps) {
+export function MyChatRoomTable({ chatRooms }: ChatRoomTableProps) {
 
   const navigate = useNavigate();
 
   const onClickRow = (chatRoom: ChatRoom) => {
-    navigate(`/chat-rooms/${chatRoom.id}`);
+    navigate(`/my-chat-rooms/${chatRoom.id}`);
   };
 
   return (
@@ -29,7 +29,6 @@ export function ChatRoomTable({ chatRooms }: ChatRoomTableProps) {
           <TableRow className="hover:bg-muted/0">
             <TableHead className="text-left" css={{width: "10rem"}}>이름</TableHead>
             <TableHead className="text-center">참여인원</TableHead>
-            <TableHead className="text-center">생성자</TableHead>
             <TableHead className="text-center">생성일</TableHead>
           </TableRow>
         </TableHeader>
@@ -43,7 +42,6 @@ export function ChatRoomTable({ chatRooms }: ChatRoomTableProps) {
             >
               <TableCell className="text-left">{chatRoom.title}</TableCell>
               <TableCell className="text-center">{chatRoom.userCnt}</TableCell>
-              <TableCell className="text-center">{chatRoom.createdBy.nickname}</TableCell>
               <TableCell className="text-center">{getDateTimeString(chatRoom.createdAt)}</TableCell>
             </TableRow>
           ))}

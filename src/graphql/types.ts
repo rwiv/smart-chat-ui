@@ -23,6 +23,7 @@ export type Account = {
   avatarUrl: Scalars['String']['output'];
   chatRooms?: Maybe<Array<ChatRoom>>;
   chatUsers?: Maybe<Array<ChatUser>>;
+  createdAt: Scalars['DateTime']['output'];
   id: Scalars['UUID']['output'];
   /**     password: String! */
   nickname: Scalars['String']['output'];
@@ -82,6 +83,7 @@ export type ChatUser = {
   __typename?: 'ChatUser';
   account: Account;
   accountId: Scalars['UUID']['output'];
+  chatMessages?: Maybe<Array<ChatMessage>>;
   chatRoom: ChatRoom;
   chatRoomId: Scalars['UUID']['output'];
   createdAt: Scalars['DateTime']['output'];

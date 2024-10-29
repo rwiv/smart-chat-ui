@@ -11,3 +11,20 @@ export function getPrettyDateString(dateString: string) {
     return `${restMinute}분 전`;
   }
 }
+
+export function getDateString(dateString: string) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  return `${year}년 ${month}월`;
+}
+
+export function getDateTimeString(dateString: string) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+  return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
+}

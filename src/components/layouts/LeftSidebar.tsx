@@ -22,10 +22,10 @@ export function LeftSidebar() {
 
       <div className="mt-1" />
       <Link to={"/"}>
-        <SidebarButton>채팅방</SidebarButton>
+        <SidebarButton>채팅방 리스트</SidebarButton>
       </Link>
-      <Link to={"/"}>
-        <SidebarButton>다시보기</SidebarButton>
+      <Link to={"/my-chat-rooms"}>
+        <SidebarButton>내 채팅방 관리</SidebarButton>
       </Link>
     </div>
   )

@@ -11,11 +11,16 @@ import {LoginPage} from "@/pages/LoginPage.tsx";
 import {IndexPage} from "@/pages/IndexPage.tsx";
 import {TestPage} from "@/pages/TestPage.tsx";
 import {ChatRoomListPage} from "@/pages/ChatRoomListPage.tsx";
+import {MyChatRoomListPage} from "@/pages/MyChatRoomListPage.tsx";
+import {ChatRoomManagementPage} from "@/pages/ChatRoomManagementPage.tsx";
 
 const routes: RouteObject[] = [
   { path: '/', element: <IndexPage /> },
   { path: '/chat-rooms', element: <ChatRoomListPage /> },
   { path: '/chat-rooms/:chatRoomId', element: <ChatRoomPage /> },
+  { path: '/my-chat-rooms', element: <MyChatRoomListPage /> },
+  { path: '/my-chat-rooms/:chatRoomId', element: <ChatRoomManagementPage /> },
+
   { path: '/login', element: <LoginPage /> },
   { path: '/signup', element: <SignupPage /> },
 ];

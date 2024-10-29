@@ -2,9 +2,9 @@ type Account {
     id: UUID!
     role: AccountRole!
     username: String!
-#    password: String!
     nickname: String!
     avatarUrl: String!
+    createdAt: DateTime!
 
     chatUsers: [ChatUser!]
     chatRooms: [ChatRoom!]

@@ -3,7 +3,7 @@ import {css} from "@emotion/react";
 import React from "react";
 import {ChatMessage} from "@/graphql/types.ts";
 
-const frameStyle = css`
+export const frameStyle = css`
   ::-webkit-scrollbar {
     width: 0.5rem;
   }
@@ -19,7 +19,7 @@ const frameStyle = css`
   }
 `;
 
-const SCROLL_RATIO = 0.7;
+export const SCROLL_RATIO = 0.7;
 
 interface ChatMessageListProps {
   chatMessages: ChatMessage[];

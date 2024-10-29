@@ -3,6 +3,7 @@ import {Mutation} from "@/graphql/types.ts";
 import {chatRoomColumns} from "@/client/chatRoom.ts";
 import {accountColumns} from "@/client/account.ts";
 import {useQuery} from "@/lib/web/apollo.ts";
+import {chatMessageColumns} from "@/client/chatMessage.ts";
 
 export const chatUserColumns = gql`
     fragment chatUserColumns on ChatUser {
@@ -12,7 +13,6 @@ export const chatUserColumns = gql`
         createdAt
     }
 `;
-
 
 export const chatUserByIdQL = gql`
     query ChatUserById($id: UUID!) {
@@ -37,12 +37,25 @@ export function chatRoomAndUsersByIdQL(id: string) {
                     account {
                         ...accountColumns
                     }
+                    chatMessages {
+                        ...chatMessageColumns
+                        createdBy {
+                            ...accountColumns
+                        }
+                    }
+                }
+                chatMessages {
+                    ...chatMessageColumns
+                    createdBy {
+                        ...accountColumns
+                    }
                 }
             }
         }
         ${accountColumns}
         ${chatRoomColumns}
         ${chatUserColumns}
+        ${chatMessageColumns}
     `;
 }
 
