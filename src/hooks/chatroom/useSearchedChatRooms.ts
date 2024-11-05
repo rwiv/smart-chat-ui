@@ -56,7 +56,7 @@ export function useSearchedChatRooms() {
   }, { threshold: 0 });
 
   const addChatRoom = (chatRoom: ChatRoom) => {
-    setChatRooms(prev => [chatRoom, ...prev]);
+    setChatRooms(prev => [...prev, chatRoom]);
   }
 
   const removeChatRoom = (chatRoomId: string) => {

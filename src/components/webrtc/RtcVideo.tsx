@@ -1,6 +1,7 @@
 import {useEffect, useRef} from "react";
 import {Account} from "@/graphql/types.ts";
 import {css} from "@emotion/react";
+import {Center, HStack} from "@/lib/style/layouts.tsx";
 
 const defaultVideoStyle = css`
   width: 22.4rem;
@@ -51,13 +52,36 @@ export function RtcVideo({ mediaStream, account, type }: RtcVideoProps) {
   }
 
   return (
-    <div>
+    <div className="relative">
       <video
         ref={remoteVideoRef}
         css={getStyle()}
         autoPlay
       />
-      <div>username: {account.nickname}</div>
+      <div className="absolute" css={css`
+        background-color: rgba(0, 0, 0, 0.7);
+        bottom: 0.5rem;
+        left: 0.5rem;
+        border-radius: 0.5rem;
+        padding: 0.1rem 0.6rem;
+        pointer-events: none;
+      `}>
+        <HStack>
+          <Center>
+            <div css={css`
+              background-color: #00ff00;
+              border-radius: 50%;
+              width: 0.4rem;
+              height: 0.4rem;
+            `}/>
+          </Center>
+          <div css={css`
+            color: white;
+          `}>
+            {account.nickname}
+          </div>
+        </HStack>
+      </div>
     </div>
   );
 }

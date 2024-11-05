@@ -12,7 +12,6 @@ import {Input} from "@/components/ui/input.tsx";
 import {useRef, useState} from "react";
 import {ChatRoom, ChatRoomAdd} from "@/graphql/types.ts";
 import {useCreateChatRoom} from "@/client/chatRoom.ts";
-import { Checkbox } from "@/components/ui/checkbox"
 import {buttonStyle} from "@/styles/buttonStyles.ts";
 
 interface ChatRoomCreateButtonProps {
@@ -27,10 +26,10 @@ export function ChatRoomCreateButton({ addChatRoom }: ChatRoomCreateButtonProps)
   const [isPrivate, setIsPrivate] = useState(false);
   const [password, setPassword] = useState("");
 
-  const handleCheckboxChange = (checked: boolean) => {
-    setIsPrivate(checked); 
-    if (!checked) setPassword(''); 
-  };
+  // const handleCheckboxChange = (checked: boolean) => {
+  //   setIsPrivate(checked);
+  //   if (!checked) setPassword('');
+  // };
 
   const onAddChatRoom = async () => {
     const variables: {req: ChatRoomAdd} = {
@@ -75,17 +74,17 @@ export function ChatRoomCreateButton({ addChatRoom }: ChatRoomCreateButtonProps)
             />
           </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Checkbox id="terms" 
-            checked={isPrivate}
-            onCheckedChange={handleCheckboxChange}/>
-            <label
-              htmlFor="terms"
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              비밀방으로 만들기
-            </label>
-        </div>
+        {/*<div className="flex items-center space-x-2">*/}
+        {/*  <Checkbox id="terms" */}
+        {/*    checked={isPrivate}*/}
+        {/*    onCheckedChange={handleCheckboxChange}/>*/}
+        {/*    <label*/}
+        {/*      htmlFor="terms"*/}
+        {/*      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"*/}
+        {/*    >*/}
+        {/*      비밀방으로 만들기*/}
+        {/*    </label>*/}
+        {/*</div>*/}
         {isPrivate && (
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="password" className="text-right">

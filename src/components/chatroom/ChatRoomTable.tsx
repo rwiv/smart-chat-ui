@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table"
 import {useNavigate} from "react-router";
 import {getDateTimeString} from "@/lib/common/date.ts";
+import {useCreateChatUser} from "@/client/chatUser.ts";
 
 interface ChatRoomTableProps {
   chatRooms: ChatRoom[];
@@ -16,9 +17,11 @@ interface ChatRoomTableProps {
 
 export function ChatRoomTable({ chatRooms }: ChatRoomTableProps) {
 
+  const {createChatUser} = useCreateChatUser();
   const navigate = useNavigate();
 
-  const onClickRow = (chatRoom: ChatRoom) => {
+  const onClickRow = async (chatRoom: ChatRoom) => {
+    await createChatUser({variables: {chatRoomId: chatRoom.id}});
     navigate(`/chat-rooms/${chatRoom.id}`);
   };
 

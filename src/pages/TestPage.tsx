@@ -1,10 +1,12 @@
 import {useEffect, useState} from "react";
 import {login, LoginRequest} from "@/client/account.ts";
-import {SketchCanvasTest} from "@/components/canvas/SketchCanvasTest.tsx";
+import {RtcVideo} from "@/components/webrtc/RtcVideo.tsx";
+import {useMyInfo} from "@/hooks/common/useMyInfo.ts";
 
 export function TestPage() {
 
   const [isLogin, setIsLogin] = useState(false);
+  const {myInfo} = useMyInfo();
 
   useEffect(() => {
     onLoginUser1().then(() => setIsLogin(true));
@@ -20,8 +22,13 @@ export function TestPage() {
 
   return (
     <div>
-      {isLogin && (
-        <SketchCanvasTest />
+      {isLogin && myInfo && (
+        <RtcVideo
+          mediaStream={new MediaStream()}
+          account={myInfo}
+          type="DEFAULT"
+        />
+        // <SketchCanvasTest />
       )}
     </div>
   )
