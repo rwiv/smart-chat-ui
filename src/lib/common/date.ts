@@ -26,5 +26,6 @@ export function getDateTimeString(dateString: string) {
   const day = date.getDate();
   const hour = date.getHours();
   const minute = date.getMinutes();
-  return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분`;
+  const second = date.getSeconds();
+  return `${year}년 ${month}월 ${day}일 ${hour}시 ${minute}분 ${second}초`;
 }

@@ -15,6 +15,7 @@ export function useMyInfo() {
   useEffect(() => {
     if (error) {
       if (consts.isDev) {
+        // navigate("/login");
         navigate("/account-select");
       } else {
         navigate("/login");
